@@ -18,6 +18,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 	"github.com/oliverisaac/fanks/static"
 	"github.com/oliverisaac/goli"
 	"github.com/pkg/errors"
@@ -79,7 +80,24 @@ func run() error {
 
 	e.StaticFS("/static", static.FS)
 
-	e.Use(middleware.Recover())
+	origErrHandler := e.HTTPErrorHandler
+	e.HTTPErrorHandler = func(err error, c echo.Context) {
+		logrus.Error(err)
+		origErrHandler(err, c)
+	}
+
+	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
+		Skipper:           middleware.DefaultSkipper,
+		StackSize:         4 << 10, // 4 KB
+		DisableStackAll:   false,
+		DisablePrintStack: false,
+		LogLevel:          log.ERROR,
+		LogErrorFunc: func(c echo.Context, err error, stack []byte) error {
+			logrus.Error(errors.Wrap(err, "recovered panic"))
+			return nil
+		},
+		DisableErrorHandler: false,
+	}))
 
 	e.Use(middleware.Secure())
 

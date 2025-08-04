@@ -84,7 +84,7 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 		email := c.FormValue("email")
 		password := c.FormValue("password")
 
-		email, err := mail.ParseAddress(email)
+		parsedEmail, err := mail.ParseAddress(email)
 		if err != nil {
 			return c.Render(422, "sign-up-form", FormData{
 				Errors: map[string]string{
@@ -95,6 +95,7 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 				},
 			})
 		}
+		email = parsedEmail.Address
 
 		if len(cfg.AllowSignupEmails) > 0 && !slices.Contains(cfg.AllowSignupEmails, email) {
 			return c.Render(422, "sign-up-form", FormData{
