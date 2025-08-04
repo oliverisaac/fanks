@@ -5,7 +5,8 @@
 tmp/
 .env
 bin
-fanks.db
+*.db
+docker-run
 
 .DS_Store
 
