@@ -26,15 +26,13 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy app source
-COPY ./views/ /workdir/viws/
+COPY ./views/ /workdir/views/
 
 RUN templ generate
 
 COPY . .
 
 COPY --from=tailwind /workdir/static/css/style.min.css ./static/css/style.min.css
-
-RUN tree . && exit 1
 
 # Build static Go binary
 RUN go build -o /fanks ./cmd/fanks/
@@ -47,7 +45,7 @@ FROM scratch AS release
 
 # Copy static binary
 COPY --from=builder /fanks /fanks
-COPY --from=builder /template /template
+COPY --from=builder /workdir/views /views
 
 # Copy CA certificates
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

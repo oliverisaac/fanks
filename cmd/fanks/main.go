@@ -13,12 +13,13 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/oliverisaac/goli"
 	"github.com/oliverisaac/fanks/static"
+	"github.com/oliverisaac/goli"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
-	"gorm.io/driver/sqlite"
+	_ "github.com/ncruces/go-sqlite3/embed"
+	sqlite "github.com/ncruces/go-sqlite3/gormlite"
 	"gorm.io/gorm"
 )
 
@@ -34,7 +35,7 @@ type Template struct {
 
 func newTemplate() *Template {
 	return &Template{
-		tmpl: template.Must(template.ParseGlob("template/*.html")),
+		tmpl: template.Must(template.ParseGlob("views/*.html")),
 	}
 }
 
@@ -45,7 +46,7 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
-		fmt.Println("error loading godotenv")
+		logrus.Error(errors.Wrap(err, "Failed to load .env"))
 	}
 
 	e := echo.New()
@@ -62,13 +63,13 @@ func main() {
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))
 
-	store := sessions.NewCookieStore([]byte(os.Getenv("THANX_COOKIE_STORE_SECRET")))
+	store := sessions.NewCookieStore([]byte(os.Getenv("FANKS_COOKIE_STORE_SECRET")))
 	e.Use(session.Middleware(store))
 	e.Use(UserMiddleware())
 
-	db, err := gorm.Open(sqlite.Open(os.Getenv("THANX_DB_PATH")), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(os.Getenv("FANKS_DB_PATH")), &gorm.Config{})
 	if err != nil {
-		panic("failed to connect database")
+		panic(errors.Wrap(err, "failed to connect database"))
 	}
 
 	gormTables := []any{

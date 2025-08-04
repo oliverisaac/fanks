@@ -5,7 +5,7 @@
 tmp/
 .env
 bin
-thanx.db
+fanks.db
 
 .DS_Store
 

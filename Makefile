@@ -23,6 +23,17 @@ go-build:
 .PHONY: dev-build
 dev-build: templ-generate tailwind-dev go-build
 
+clean:
+	rm docker-run
+
+docker-run:
+	echo "docker run --rm -v $$(pwd)/${APP_NAME}.db:/${APP_NAME}.db --env FANKS_DB_PATH="${APP_NAME}.db" --env FANKS_COOKIE_STORE_SECRET="secret" -i -p 8080:8080 oliverisaac/${APP_NAME}:latest" > ./docker-run
+	chmod +x ./docker-run
+
+.PHONY: docker-build
+docker-build: docker-run
+	docker build -t oliverisaac/${APP_NAME}:latest .
+
 cert.key:
 	openssl genrsa -out cert.key 2048
 
@@ -33,7 +44,7 @@ cert.pem: cert.key
 certs: cert.key cert.pem
 
 .PHONY: dev certs
-dev: dev-build
+dev: docker-build
 	air
 
 .PHONY: build

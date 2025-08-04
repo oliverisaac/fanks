@@ -15,6 +15,11 @@ require (
 )
 
 require (
+	github.com/ncruces/julianday v1.0.0 // indirect
+	github.com/tetratelabs/wazero v1.9.0 // indirect
+)
+
+require (
 	github.com/gorilla/context v1.1.2 // indirect
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
@@ -23,6 +28,8 @@ require (
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
+	github.com/ncruces/go-sqlite3 v0.27.1
+	github.com/ncruces/go-sqlite3/gormlite v0.24.0
 	github.com/oliverisaac/goli v0.0.0-20250719025147-afe3dc88cea2
 	github.com/pkg/errors v0.9.1
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
