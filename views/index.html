@@ -40,9 +40,13 @@
       {{ if .User }}
       <div id='newnote'>
         <h2>Today I am grateful for...</h2>
-        <form hx-post='/note/create'>
-          <textarea name='content'></textarea>
-          <input type='submit'/>
+        <form hx-post='/note/create' hx-target='#notes' hx-swap='afterbegin' class="flex items-center space-x-2 p-4 bg-white rounded-lg shadow-md">
+          <input type='text' name='content' class="flex-grow px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" placeholder="Write your note here..."/>
+          <button type='submit' class="p-2 text-white bg-blue-500 rounded-full hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+          </button>
         </form>
       </div>
       {{ end }}

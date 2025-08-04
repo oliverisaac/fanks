@@ -27,7 +27,7 @@ clean:
 	rm docker-run
 
 docker-run:
-	echo "docker run --env-file .env --name ${APP_NAME} --rm -v $$(pwd)/${APP_NAME}.db:/${APP_NAME}.db --env FANKS_DB_PATH="${APP_NAME}.db" --env FANKS_COOKIE_STORE_SECRET="secret" -i -p 8080:8080 oliverisaac/${APP_NAME}:latest" > ./docker-run
+	echo "docker run --env-file .env --name ${APP_NAME} --rm -v $$(pwd)/tmp/:/data/ --env FANKS_DB_PATH="/data/${APP_NAME}.db" -i -p 8080:8080 oliverisaac/${APP_NAME}:latest" > ./docker-run
 	chmod +x ./docker-run
 
 .PHONY: docker-build

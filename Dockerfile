@@ -41,7 +41,7 @@ RUN go build -o /fanks ./cmd/fanks/
 RUN echo "nonroot:x:10001:10001:NonRoot User:/:/sbin/nologin" > /etc/passwd
 
 # ---------- Stage 2: Final ----------
-FROM scratch AS release
+FROM alpine AS release
 
 # Copy static binary
 COPY --from=builder /fanks /fanks
@@ -63,3 +63,4 @@ EXPOSE 4000
 
 # Start the app
 ENTRYPOINT ["/fanks"]
+

@@ -114,22 +114,16 @@ func run() error {
 		return errors.Wrap(err, "failed to connect database")
 	}
 
-	gormTables := []any{
-		User{},
-		Note{},
-	}
-	for _, t := range gormTables {
-		err = db.AutoMigrate(&t)
-		if err != nil {
-			return errors.Wrap(err, "Failed to migrate")
-		}
+	err = db.AutoMigrate(&User{}, &Note{})
+	if err != nil {
+		return errors.Wrap(err, "Failed to migrate")
 	}
 
 	// Pages
 	e.GET("/", homePageHandler(cfg, db))
 
 	// Blocks
-	e.GET("/auth/sign-in", signIn())
+	e.GET("/auth/sign-in", signIn(cfg))
 	e.POST("/auth/sign-in", signInWithEmailAndPassword(db))
 	if cfg.AllowSignup || len(cfg.AllowSignupEmails) > 0 {
 		e.GET("/auth/sign-up", signUp())
@@ -165,6 +159,7 @@ func configFromEnv() (Config, error) {
 			ret.AllowSignupEmails = append(ret.AllowSignupEmails, email.Address)
 		}
 	}
+	logrus.Infof("Allowed signup emails: %v", ret.AllowSignupEmails)
 
 	cookieSecret, ok := os.LookupEnv("FANKS_COOKIE_STORE_SECRET")
 	if !ok {

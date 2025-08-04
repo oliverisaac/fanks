@@ -18,11 +18,12 @@ import (
 )
 
 type FormData struct {
+	Config Config
 	Errors map[string]string
 	Values map[string]string
 }
 
-func newFormData() FormData {
+func newFormData(cfg Config) FormData {
 	return FormData{
 		Errors: map[string]string{},
 		Values: map[string]string{},
@@ -161,9 +162,9 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 	}
 }
 
-func signIn() echo.HandlerFunc {
+func signIn(cfg Config) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.Render(200, "sign-in-form", nil)
+		return c.Render(200, "sign-in-form", newFormData(cfg))
 	}
 }
 
