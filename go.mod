@@ -1,4 +1,4 @@
-module github.com/oliverisaac/thanx
+module github.com/oliverisaac/fanks
 
 go 1.24.5
 

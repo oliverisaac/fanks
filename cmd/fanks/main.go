@@ -14,6 +14,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/oliverisaac/goli"
+	"github.com/oliverisaac/fanks/static"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 
@@ -51,7 +52,7 @@ func main() {
 
 	e.Renderer = newTemplate()
 
-	e.Static("/static", "static")
+	e.StaticFS("/static", static.FS)
 
 	e.Use(middleware.Recover())
 
