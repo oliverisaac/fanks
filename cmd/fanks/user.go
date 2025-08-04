@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"net/mail"
+	"slices"
 	"time"
 
 	"github.com/gorilla/sessions"
@@ -76,17 +78,28 @@ func signUp() echo.HandlerFunc {
 	}
 }
 
-func signUpWithEmailAndPassword(db *gorm.DB) echo.HandlerFunc {
+func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		name := c.FormValue("name")
 		email := c.FormValue("email")
 		password := c.FormValue("password")
 
-		_, err := mail.ParseAddress(email)
+		email, err := mail.ParseAddress(email)
 		if err != nil {
 			return c.Render(422, "sign-up-form", FormData{
 				Errors: map[string]string{
 					"email": "Oops! That email address appears to be invalid",
+				},
+				Values: map[string]string{
+					"email": email,
+				},
+			})
+		}
+
+		if len(cfg.AllowSignupEmails) > 0 && !slices.Contains(cfg.AllowSignupEmails, email) {
+			return c.Render(422, "sign-up-form", FormData{
+				Errors: map[string]string{
+					"email": "Oops! That email address is banned",
 				},
 				Values: map[string]string{
 					"email": email,
@@ -204,7 +217,7 @@ func signInWithEmailAndPassword(db *gorm.DB) echo.HandlerFunc {
 			return err
 		}
 
-		return c.Render(200, "dashboard", newDashboardData(user))
+		return c.Redirect(http.StatusFound, "/")
 	}
 }
 

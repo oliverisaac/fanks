@@ -27,11 +27,12 @@ clean:
 	rm docker-run
 
 docker-run:
-	echo "docker run --name ${APP_NAME} --rm -v $$(pwd)/${APP_NAME}.db:/${APP_NAME}.db --env FANKS_DB_PATH="${APP_NAME}.db" --env FANKS_COOKIE_STORE_SECRET="secret" -i -p 8080:8080 oliverisaac/${APP_NAME}:latest" > ./docker-run
+	echo "docker run --env-file .env --name ${APP_NAME} --rm -v $$(pwd)/${APP_NAME}.db:/${APP_NAME}.db --env FANKS_DB_PATH="${APP_NAME}.db" --env FANKS_COOKIE_STORE_SECRET="secret" -i -p 8080:8080 oliverisaac/${APP_NAME}:latest" > ./docker-run
 	chmod +x ./docker-run
 
 .PHONY: docker-build
 docker-build: docker-run
+	docker kill ${APP_NAME} || true
 	docker build -t oliverisaac/${APP_NAME}:latest .
 
 cert.key:

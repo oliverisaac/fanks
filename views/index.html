@@ -146,7 +146,9 @@
     </p>
     {{ end }}
 
+    {{ if or (gt 0 (len .Config.AllowSignupEmails)) .Config.AllowSignup  }}
     <p>Do you need an account? <button type="button" hx-get="/auth/sign-up" hx-target="body">Register Now</button></p>
+    {{- end }}
   </form>
 </div>
 {{ end }}

@@ -9,9 +9,10 @@ import (
 )
 
 type HomePageData struct {
-	User  *User
-	Notes []Note
-	Err   error
+	User   *User
+	Config Config
+	Notes  []Note
+	Err    error
 }
 
 func (d *HomePageData) WithError(err error) *HomePageData {
@@ -29,9 +30,9 @@ func (d *HomePageData) WithNotes(notes []Note) *HomePageData {
 	return d
 }
 
-func homePageHandler(db *gorm.DB) echo.HandlerFunc {
+func homePageHandler(cfg Config, db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		pageData := HomePageData{}
+		pageData := HomePageData{Config: cfg}
 
 		if user, ok := GetSessionUser(c); ok {
 			logrus.Infof("Generating homepage for user %s", user.Email)

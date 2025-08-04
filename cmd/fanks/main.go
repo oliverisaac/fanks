@@ -2,9 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	errs "errors"
 	"fmt"
 	"html/template"
 	"io"
+	"net/mail"
+	"path"
+	"strconv"
+	"strings"
 
 	"os"
 
@@ -43,10 +48,29 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 	return t.tmpl.ExecuteTemplate(w, name, data)
 }
 
+type Config struct {
+	AllowSignup       bool
+	AllowSignupEmails []string
+	CookeSecret       []byte
+	DBPath            string
+}
+
 func main() {
+	err := run()
+	if err != nil {
+		logrus.Fatal(err)
+	}
+}
+
+func run() error {
 	err := godotenv.Load(".env")
 	if err != nil {
 		logrus.Error(errors.Wrap(err, "Failed to load .env"))
+	}
+
+	cfg, err := configFromEnv()
+	if err != nil {
+		return errors.Wrap(err, "Loading config from env")
 	}
 
 	e := echo.New()
@@ -63,13 +87,13 @@ func main() {
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))
 
-	store := sessions.NewCookieStore([]byte(os.Getenv("FANKS_COOKIE_STORE_SECRET")))
+	store := sessions.NewCookieStore(cfg.CookeSecret)
 	e.Use(session.Middleware(store))
 	e.Use(UserMiddleware())
 
-	db, err := gorm.Open(sqlite.Open(os.Getenv("FANKS_DB_PATH")), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(cfg.DBPath), &gorm.Config{})
 	if err != nil {
-		panic(errors.Wrap(err, "failed to connect database"))
+		return errors.Wrap(err, "failed to connect database")
 	}
 
 	gormTables := []any{
@@ -79,24 +103,66 @@ func main() {
 	for _, t := range gormTables {
 		err = db.AutoMigrate(&t)
 		if err != nil {
-			logrus.Fatal(errors.Wrap(err, "Failed to migrate"))
+			return errors.Wrap(err, "Failed to migrate")
 		}
 	}
 
 	// Pages
-	e.GET("/", homePageHandler(db))
+	e.GET("/", homePageHandler(cfg, db))
 
 	// Blocks
 	e.GET("/auth/sign-in", signIn())
 	e.POST("/auth/sign-in", signInWithEmailAndPassword(db))
-	e.GET("/auth/sign-up", signUp())
-	e.POST("/auth/sign-up", signUpWithEmailAndPassword(db))
+	if cfg.AllowSignup || len(cfg.AllowSignupEmails) > 0 {
+		e.GET("/auth/sign-up", signUp())
+		e.POST("/auth/sign-up", signUpWithEmailAndPassword(cfg, db))
+	}
 	e.POST("/auth/sign-out", signOut())
 
 	// notes
 	e.POST("/note/create", createNote(db))
 
-	e.Logger.Fatal(e.Start(":8080"))
+	return e.Start(":8080")
+}
+
+func configFromEnv() (Config, error) {
+	ret := Config{}
+	var retErr error
+	var err error
+
+	ret.AllowSignup, err = strconv.ParseBool(goli.DefaultEnv("FANKS_ALLOW_SIGNUP", "false"))
+	if err != nil {
+		retErr = errs.Join(retErr, errors.Wrap(err, "parsing FANKS_ALLOW_SIGNUP"))
+	}
+
+	allowedEmails := strings.Split(os.Getenv("FANKS_ALLOW_SIGNUP_EMAILS"), ",")
+	for _, e := range allowedEmails {
+		if e == "" {
+			continue
+		}
+		email, err := mail.ParseAddress(e)
+		if err != nil {
+			retErr = errs.Join(retErr, errors.Wrapf(err, "parsing email %q", e))
+		} else {
+			ret.AllowSignupEmails = append(ret.AllowSignupEmails, email.Address)
+		}
+	}
+
+	cookieSecret, ok := os.LookupEnv("FANKS_COOKIE_STORE_SECRET")
+	if !ok {
+		retErr = errs.Join(retErr, fmt.Errorf("You must define env FANKS_COOKIE_STORE_SECRET"))
+	} else {
+		ret.CookeSecret = []byte(cookieSecret)
+	}
+
+	ret.DBPath, ok = os.LookupEnv("FANKS_DB_PATH")
+	if !ok {
+		retErr = errs.Join(retErr, fmt.Errorf("You must define env FANKS_DB_PATH"))
+	} else if _, err := os.Stat(path.Dir(ret.DBPath)); err != nil {
+		retErr = errs.Join(retErr, errors.Wrap(err, "Directory for FANKS_DB_PATH must exist"))
+	}
+
+	return ret, retErr
 }
 
 func UserMiddleware() echo.MiddlewareFunc {
