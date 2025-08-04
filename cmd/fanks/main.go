@@ -4,8 +4,7 @@ import (
 	"encoding/json"
 	errs "errors"
 	"fmt"
-	"html/template"
-	"io"
+	"net/http"
 	"net/mail"
 	"path"
 	"strconv"
@@ -13,6 +12,7 @@ import (
 
 	"os"
 
+	"github.com/a-h/templ"
 	"github.com/gorilla/sessions"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo-contrib/session"
@@ -35,18 +35,15 @@ func init() {
 
 const UserKey = "session-user"
 
-type Template struct {
-	tmpl *template.Template
-}
+func render(ctx echo.Context, status int, t templ.Component) error {
+	ctx.Response().Writer.WriteHeader(status)
 
-func newTemplate() *Template {
-	return &Template{
-		tmpl: template.Must(template.ParseGlob("views/*.html")),
+	err := t.Render(ctx.Request().Context(), ctx.Response().Writer)
+	if err != nil {
+		return ctx.String(http.StatusInternalServerError, "failed to render response template")
 	}
-}
 
-func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
-	return t.tmpl.ExecuteTemplate(w, name, data)
+	return nil
 }
 
 type Config struct {
@@ -75,8 +72,6 @@ func run() error {
 	}
 
 	e := echo.New()
-
-	e.Renderer = newTemplate()
 
 	e.StaticFS("/static", static.FS)
 

@@ -75,7 +75,7 @@ func (u User) GetNotes(db *gorm.DB) ([]Note, error) {
 
 func signUp() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.Render(200, "sign-up-form", nil)
+		return render(200, "sign-up-form", nil)
 	}
 }
 
@@ -87,7 +87,7 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 
 		parsedEmail, err := mail.ParseAddress(email)
 		if err != nil {
-			return c.Render(422, "sign-up-form", FormData{
+			return render(422, "sign-up-form", FormData{
 				Errors: map[string]string{
 					"email": "Oops! That email address appears to be invalid",
 				},
@@ -99,7 +99,7 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 		email = parsedEmail.Address
 
 		if len(cfg.AllowSignupEmails) > 0 && !slices.Contains(cfg.AllowSignupEmails, email) {
-			return c.Render(422, "sign-up-form", FormData{
+			return render(422, "sign-up-form", FormData{
 				Errors: map[string]string{
 					"email": "Oops! That email address is banned",
 				},
@@ -110,7 +110,7 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 		}
 
 		if userExists(email, db) {
-			return c.Render(422, "sign-up-form", FormData{
+			return render(422, "sign-up-form", FormData{
 				Errors: map[string]string{
 					"email": "Oops! It appears you are already registered",
 				},
@@ -128,7 +128,7 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 		// Check if this is the first user
 		var count int64
 		if err := db.Model(&User{}).Count(&count).Error; err != nil {
-			return c.Render(500, "sign-up-form", FormData{
+			return render(500, "sign-up-form", FormData{
 				Errors: map[string]string{
 					"general": "Oops! It appears we have had an error",
 				},
@@ -150,7 +150,7 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 		}
 
 		if err := db.Create(&user).Error; err != nil {
-			return c.Render(500, "sign-up-form", FormData{
+			return render(500, "sign-up-form", FormData{
 				Errors: map[string]string{
 					"email": "Oops! It appears we have had an error",
 				},
@@ -158,13 +158,13 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 			})
 		}
 
-		return c.Render(200, "index", nil)
+		return render(200, "index", nil)
 	}
 }
 
 func signIn(cfg Config) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.Render(200, "sign-in-form", newFormData(cfg))
+		return render(200, "sign-in-form", newFormData(cfg))
 	}
 }
 
@@ -175,7 +175,7 @@ func signInWithEmailAndPassword(db *gorm.DB) echo.HandlerFunc {
 
 		_, err := mail.ParseAddress(email)
 		if err != nil {
-			return c.Render(422, "sign-in-form", FormData{
+			return render(422, "sign-in-form", FormData{
 				Errors: map[string]string{
 					"email": "Oops! That email address appears to be invalid",
 				},
@@ -188,7 +188,7 @@ func signInWithEmailAndPassword(db *gorm.DB) echo.HandlerFunc {
 		var user User
 		db.First(&user, "email = ?", email)
 		if compareErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); compareErr != nil {
-			return c.Render(422, "sign-in-form", FormData{
+			return render(422, "sign-in-form", FormData{
 				Errors: map[string]string{
 					"email": "Oops! Email address or password is incorrect.",
 				},
@@ -233,6 +233,6 @@ func signOut() echo.HandlerFunc {
 			return err
 		}
 
-		return c.Render(200, "index", nil)
+		return render(200, "index", nil)
 	}
 }

@@ -41,7 +41,7 @@ func createNote(db *gorm.DB) echo.HandlerFunc {
 
 		if err := db.Create(&note).Error; err != nil {
 			logrus.Error(errors.Wrap(err, "Saving note to db"))
-			return c.Render(500, "sign-up-form", FormData{
+			return render(500, "sign-up-form", FormData{
 				Errors: map[string]string{
 					"email": "Oops! It appears we have had an error",
 				},
@@ -49,6 +49,6 @@ func createNote(db *gorm.DB) echo.HandlerFunc {
 			})
 		}
 
-		return c.Render(200, "note", note)
+		return render(200, "note", note)
 	}
 }

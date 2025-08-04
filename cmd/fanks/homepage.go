@@ -48,6 +48,6 @@ func homePageHandler(cfg Config, db *gorm.DB) echo.HandlerFunc {
 			logrus.Infof("Generating anonymous homepage")
 		}
 
-		return c.Render(200, "index", pageData)
+		return render(200, "index", pageData)
 	}
 }
