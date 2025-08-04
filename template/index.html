@@ -1,0 +1,164 @@
+{{ block "index" . }}
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thanx</title>
+  <meta name="description"
+    content="A command line tool that helps you build and test web app ideas blazingly-fast with a streamlined Go, HTMX, and SQLite stack. Authored by Damien Sedgwick.">
+  <link href="static/styles.css" rel="stylesheet">
+  <script src="static/htmx.min.js"></script>
+</head>
+
+<body id="body">
+  <header>
+    <nav>
+      <a href="/" title="Napp Home">
+        Thanx
+      </a>
+
+      <ul>
+        {{ if .User }}
+        <li>
+          <button hx-post="/auth/sign-out" hx-target="body">Sign Out</button>
+        </li>
+        {{ end }}
+
+        {{ if not .User }}
+        <li>
+          <button hx-get="/auth/sign-in" hx-target="body">Sign In</button>
+        </li>
+        {{ end }}
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      {{ if .User }}
+      <div id='newnote'>
+        <h2>Today I am grateful for...</h2>
+        <form hx-post='/note/create'>
+          <textarea name='content'></textarea>
+          <input type='submit'/>
+        </form>
+      </div>
+      {{ end }}
+      <div id='notes'>
+        {{ range .Notes }}
+          {{ template "note" . }}
+        {{ end }}
+      </div>
+    </section>
+  </main>
+
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", (event) => {
+      document.body.addEventListener('htmx:beforeSwap', function (evt) {
+        if (evt.detail.xhr.status === 422 || evt.detail.xhr.status === 500) {
+          console.log("setting status to paint");
+          // allow 422 responses to swap as we are using this as a signal that
+          // a form was submitted with bad data and want to rerender with the
+          // errors
+          //
+          // set isError to false to avoid error logging in console
+          evt.detail.shouldSwap = true;
+          evt.detail.isError = false;
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
+{{ end }}
+
+{{ block "sign-up-form" . }}
+<div id="sign-up-form">
+  <form hx-post="/auth/sign-up" hx-target="body">
+    <a href="/" title="Napp Home">
+      Thanx
+    </a>
+
+    <div>
+      <label for="name">
+        Name
+      </label>
+      <input id="name" type="text" name="name" autocomplete="name" value="" required>
+    </div>
+
+    <div>
+      <label for="email">
+        Email
+      </label>
+      <input id="email" type="text" name="email" autocomplete="email" value="" required>
+    </div>
+
+    <div>
+      <label for="password">
+        Password
+      </label>
+      <input id="password" type="password" name="password" value="" required>
+    </div>
+
+    <button type="submit">Register</button>
+
+    {{ if .Errors.email}}
+    <p>
+      {{ .Errors.email}}
+    </p>
+    {{ end }}
+
+    <p>Already have an account? <button type="button" hx-get="/auth/sign-in" hx-target="body">Sign
+        In</button></p>
+  </form>
+</div>
+{{ end }}
+
+{{ block "sign-in-form" . }}
+<div id="sign-in-form">
+  <form hx-post="/auth/sign-in" hx-target="body">
+    <a href="/" title="Napp Home">
+      Thanx
+    </a>
+
+    <div>
+      <label for="email">
+        Email
+      </label>
+      <input id="email" type="text" name="email" autocomplete="email" value="" required>
+    </div>
+
+    <div>
+      <label for="password">
+        Password
+      </label>
+      <input id="password" type="password" name="password" value="" required>
+    </div>
+
+    <button type="submit">Sign In</button>
+
+    {{ if .Errors.email}}
+    <p>
+      {{ .Errors.email}}
+    </p>
+    {{ end }}
+
+    <p>Do you need an account? <button type="button" hx-get="/auth/sign-up" hx-target="body">Register Now</button></p>
+  </form>
+</div>
+{{ end }}
+
+{{ block "note" . }}
+  <div id='note-{{ .ID }}' class='note'>
+    <div class='content'>
+      {{ .Content }}
+    </div>
+    <div class='time'>
+    </div>
+    <div class='creator'>
+      {{ .User.Name }}
+    </div>
+  </div>
+{{ end }}

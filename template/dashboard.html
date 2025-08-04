@@ -1,0 +1,57 @@
+{{ block "dashboard" . }}
+<!DOCTYPE html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Napp | Nano App | Go, HTMX & SQLite</title>
+  <meta name="description"
+    content="A command line tool that helps you build and test web app ideas blazingly-fast with a streamlined Go, HTMX, and SQLite stack. Authored by Damien Sedgwick.">
+  <link href="static/styles.css" rel="stylesheet">
+  <script src="static/htmx.min.js"></script>
+</head>
+
+<body id="body">
+  <header>
+    <nav>
+      <a href="/" title="Napp Home">
+        Thanx
+      </a>
+
+      <ul>
+        {{ if .User }}
+        <li>
+          <button hx-post="/auth/sign-out" hx-target="body">Sign Out</button>
+        </li>
+        {{ end }}
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <h1>Hello, {{ .User.Name }}</h1>
+      <p>This is a protected route!</p>
+    </section>
+  </main>
+
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", (event) => {
+      document.body.addEventListener('htmx:beforeSwap', function (evt) {
+        if (evt.detail.xhr.status === 422) {
+          console.log("setting status to paint");
+          // allow 422 responses to swap as we are using this as a signal that
+          // a form was submitted with bad data and want to rerender with the
+          // errors
+          //
+          // set isError to false to avoid error logging in console
+          evt.detail.shouldSwap = true;
+          evt.detail.isError = false;
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
+{{ end }}
