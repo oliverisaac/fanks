@@ -14,7 +14,7 @@ func homePageHandler(cfg types.Config, db *gorm.DB) echo.HandlerFunc {
 
 		if user, ok := GetSessionUser(c); ok {
 			logrus.Infof("Generating homepage for user %s", user.Email)
-			notes, err := user.GetNotes(db)
+			notes, err := GetAllNotes(db)
 			if err != nil {
 				pageData.WithError(err)
 			}

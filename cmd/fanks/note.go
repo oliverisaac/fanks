@@ -66,3 +66,12 @@ func deleteNote(db *gorm.DB) echo.HandlerFunc {
 		return c.NoContent(200)
 	}
 }
+
+func GetAllNotes(db *gorm.DB) ([]types.Note, error) {
+	ret := []types.Note{}
+	result := db.Preload("User").Order("created_at DESC").Limit(50).Find(&ret)
+	if result.Error != nil {
+		return nil, errors.Wrapf(result.Error, "Looking for all notes")
+	}
+	return ret, nil
+}
