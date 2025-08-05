@@ -115,6 +115,7 @@ func run() error {
 
 	// notes
 	e.POST("/note/create", createNote(db))
+	e.DELETE("/note/:id", deleteNote(db))
 
 	return e.Start(":8080")
 }
