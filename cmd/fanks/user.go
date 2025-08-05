@@ -12,74 +12,27 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
+	"github.com/oliverisaac/fanks/types"
+	"github.com/oliverisaac/fanks/views"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
-type FormData struct {
-	Config Config
-	Errors map[string]string
-	Values map[string]string
-}
-
-func newFormData(cfg Config) FormData {
-	return FormData{
-		Errors: map[string]string{},
-		Values: map[string]string{},
-	}
-}
-
 func userExists(email string, db *gorm.DB) bool {
-	var user User
+	var user types.User
 	err := db.First(&user, "email = ?", email).Error
 
 	return err != gorm.ErrRecordNotFound
 }
 
-type User struct {
-	gorm.Model
-	Name      string
-	Email     string
-	Password  string
-	Role      string
-	Notes     []Note
-	CreatedAt time.Time  `gorm:"autoCreateTime"`
-	UpdatedAt *time.Time `gorm:"autoUpdateTime"`
-	DeletedAt *time.Time
-}
-
-func newUser(name string, email string, password string, role string, created_at time.Time, updated_at *time.Time) User {
-	return User{
-		Name:      name,
-		Email:     email,
-		Password:  password,
-		Role:      role,
-		CreatedAt: created_at,
-		UpdatedAt: updated_at,
-	}
-}
-
-func (u User) IsSet() bool {
-	return u.Email != ""
-}
-
-func (u User) GetNotes(db *gorm.DB) ([]Note, error) {
-	ret := []Note{}
-	result := db.Preload("User").Where("user_id = ?", u.ID).Find(&ret)
-	if result.Error != nil {
-		return nil, errors.Wrapf(result.Error, "Looking for notes owned by user %q", u.Email)
-	}
-	return ret, nil
-}
-
 func signUp() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return render(200, "sign-up-form", nil)
+		return render(c, 200, views.SignUpForm(nil))
 	}
 }
 
-func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
+func signUpWithEmailAndPassword(db *gorm.DB, cfg types.Config) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		name := c.FormValue("name")
 		email := c.FormValue("email")
@@ -87,37 +40,16 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 
 		parsedEmail, err := mail.ParseAddress(email)
 		if err != nil {
-			return render(422, "sign-up-form", FormData{
-				Errors: map[string]string{
-					"email": "Oops! That email address appears to be invalid",
-				},
-				Values: map[string]string{
-					"email": email,
-				},
-			})
+			return render(c, 422, views.SignUpForm(fmt.Errorf("Oops! That email address appears to be invalid")))
 		}
 		email = parsedEmail.Address
 
 		if len(cfg.AllowSignupEmails) > 0 && !slices.Contains(cfg.AllowSignupEmails, email) {
-			return render(422, "sign-up-form", FormData{
-				Errors: map[string]string{
-					"email": "Oops! That email address is banned",
-				},
-				Values: map[string]string{
-					"email": email,
-				},
-			})
+			return render(c, 422, views.SignUpForm(fmt.Errorf("Oops! That email address is banned")))
 		}
 
 		if userExists(email, db) {
-			return render(422, "sign-up-form", FormData{
-				Errors: map[string]string{
-					"email": "Oops! It appears you are already registered",
-				},
-				Values: map[string]string{
-					"email": email,
-				},
-			})
+			return render(c, 422, views.SignUpForm(fmt.Errorf("Oops! It appears you are already registered")))
 		}
 
 		hash, err := bcrypt.GenerateFromPassword([]byte(password), 10)
@@ -127,13 +59,9 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 
 		// Check if this is the first user
 		var count int64
-		if err := db.Model(&User{}).Count(&count).Error; err != nil {
-			return render(500, "sign-up-form", FormData{
-				Errors: map[string]string{
-					"general": "Oops! It appears we have had an error",
-				},
-				Values: map[string]string{},
-			})
+		if err := db.Model(&types.User{}).Count(&count).Error; err != nil {
+			err := errors.Wrap(err, "Internal server error")
+			return render(c, 422, views.SignUpForm(err))
 		}
 
 		role := "user"
@@ -141,7 +69,7 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 			role = "admin"
 		}
 
-		user := User{
+		user := types.User{
 			Name:      name,
 			Email:     email,
 			Password:  string(hash),
@@ -150,52 +78,34 @@ func signUpWithEmailAndPassword(cfg Config, db *gorm.DB) echo.HandlerFunc {
 		}
 
 		if err := db.Create(&user).Error; err != nil {
-			return render(500, "sign-up-form", FormData{
-				Errors: map[string]string{
-					"email": "Oops! It appears we have had an error",
-				},
-				Values: map[string]string{},
-			})
+			err := errors.Wrap(err, "Create user error")
+			return render(c, 422, views.SignUpForm(err))
 		}
 
-		return render(200, "index", nil)
+		return render(c, 200, views.SignUpForm(nil))
 	}
 }
 
-func signIn(cfg Config) echo.HandlerFunc {
+func signIn(cfg types.Config) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return render(200, "sign-in-form", newFormData(cfg))
+		return render(c, 200, views.SignInForm(cfg, nil))
 	}
 }
 
-func signInWithEmailAndPassword(db *gorm.DB) echo.HandlerFunc {
+func signInWithEmailAndPassword(db *gorm.DB, cfg types.Config) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		email := c.FormValue("email")
 		password := c.FormValue("password")
 
 		_, err := mail.ParseAddress(email)
 		if err != nil {
-			return render(422, "sign-in-form", FormData{
-				Errors: map[string]string{
-					"email": "Oops! That email address appears to be invalid",
-				},
-				Values: map[string]string{
-					"email": email,
-				},
-			})
+			return render(c, 422, views.SignInForm(cfg, fmt.Errorf("Invalid email")))
 		}
 
-		var user User
+		var user types.User
 		db.First(&user, "email = ?", email)
 		if compareErr := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); compareErr != nil {
-			return render(422, "sign-in-form", FormData{
-				Errors: map[string]string{
-					"email": "Oops! Email address or password is incorrect.",
-				},
-				Values: map[string]string{
-					"email": email,
-				},
-			})
+			return render(c, 422, views.SignInForm(cfg, fmt.Errorf("Invalid email or password")))
 		}
 
 		sess, _ := session.Get("session", c)
@@ -207,16 +117,14 @@ func signInWithEmailAndPassword(db *gorm.DB) echo.HandlerFunc {
 
 		userBytes, err := json.Marshal(user)
 		if err != nil {
-			fmt.Println("error marshalling user value")
-			return err
+			return render(c, 422, views.SignInForm(cfg, errors.Wrap(err, "Internal server error")))
 		}
 
 		sess.Values["user"] = userBytes
 
 		err = sess.Save(c.Request(), c.Response())
 		if err != nil {
-			fmt.Println("error saving session: ", err)
-			return err
+			return render(c, 422, views.SignInForm(cfg, errors.Wrap(err, "Internal server error")))
 		}
 
 		return c.Redirect(http.StatusFound, "/")
@@ -233,6 +141,6 @@ func signOut() echo.HandlerFunc {
 			return err
 		}
 
-		return render(200, "index", nil)
+		return c.Redirect(http.StatusFound, "/")
 	}
 }

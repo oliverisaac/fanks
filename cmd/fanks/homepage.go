@@ -1,38 +1,16 @@
 package main
 
 import (
-	errs "errors"
-
 	"github.com/labstack/echo/v4"
+	"github.com/oliverisaac/fanks/types"
+	"github.com/oliverisaac/fanks/views"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
-type HomePageData struct {
-	User   *User
-	Config Config
-	Notes  []Note
-	Err    error
-}
-
-func (d *HomePageData) WithError(err error) *HomePageData {
-	d.Err = errs.Join(d.Err, err)
-	return d
-}
-
-func (d *HomePageData) WithUser(u User) *HomePageData {
-	d.User = &u
-	return d
-}
-
-func (d *HomePageData) WithNotes(notes []Note) *HomePageData {
-	d.Notes = append(d.Notes, notes...)
-	return d
-}
-
-func homePageHandler(cfg Config, db *gorm.DB) echo.HandlerFunc {
+func homePageHandler(cfg types.Config, db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		pageData := HomePageData{Config: cfg}
+		pageData := types.HomePageData{Config: cfg}
 
 		if user, ok := GetSessionUser(c); ok {
 			logrus.Infof("Generating homepage for user %s", user.Email)
@@ -48,6 +26,6 @@ func homePageHandler(cfg Config, db *gorm.DB) echo.HandlerFunc {
 			logrus.Infof("Generating anonymous homepage")
 		}
 
-		return render(200, "index", pageData)
+		return render(c, 200, views.Index(pageData))
 	}
 }

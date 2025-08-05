@@ -31,7 +31,7 @@ docker-run:
 	chmod +x ./docker-run
 
 .PHONY: docker-build
-docker-build: docker-run
+docker-build: templ-generate docker-run
 	docker kill ${APP_NAME} || true
 	docker build -t oliverisaac/${APP_NAME}:latest .
 

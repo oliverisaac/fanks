@@ -1,0 +1,123 @@
+package views
+
+import (
+"github.com/oliverisaac/fanks/types"
+"fmt"
+)
+
+func valueContent(note types.Note) string {
+if note.ID == 0 {
+return note.Content
+}
+return ""
+}
+
+templ CreateNoteForm(note types.Note, err error) {
+<div id="newnote">
+	<form hx-post="/note/create">
+		<input type="text" name="content" placeholder="Today I am grateful for..." value={valueContent(note)} />
+		<input type="submit" />
+	</form>
+	if err != nil {
+	<p class="error">
+		{err.Error()}
+	</p>
+	}
+</div>
+if note.ID > 0 {
+<div hx-swap-oob="afterbegin:#notes">
+	@Note(note)
+</div>
+}
+}
+
+templ Note(note types.Note) {
+<div id={ fmt.Sprintf("note-%d", note.ID) } class="note">
+	<div class="content">
+		{ note.Content }
+	</div>
+	<div class="time"></div>
+	<div class="creator">
+		{ note.User.Name }
+	</div>
+</div>
+}
+
+templ SignUpForm(err error) {
+<div id="sign-up-form">
+	<form hx-post="/auth/sign-up" hx-target="body">
+		<a href="/" title="Napp Home">
+			Fanks
+		</a>
+
+		<div>
+			<label for="name">
+				Name
+			</label>
+			<input id="name" type="text" name="name" autocomplete="name" value="" required />
+		</div>
+
+		<div>
+			<label for="email">
+				Email
+			</label>
+			<input id="email" type="text" name="email" autocomplete="email" value="" required />
+		</div>
+
+		<div>
+			<label for="password">
+				Password
+			</label>
+			<input id="password" type="password" name="password" value="" required />
+		</div>
+
+		<button type="submit">Register</button>
+
+		if err != nil {
+		<p class="error">
+			{err.Error()}
+		</p>
+		}
+
+		<p>Already have an account? <button type="button" hx-get="/auth/sign-in" hx-target="body">Sign
+				In</button></p>
+	</form>
+</div>
+}
+
+templ SignInForm(config types.Config, err error) {
+<div id="sign-in-form">
+	<form hx-post="/auth/sign-in" hx-target="body">
+		<a href="/" title="Napp Home">
+			Fanks
+		</a>
+
+		<div>
+			<label for="email">
+				Email
+			</label>
+			<input id="email" type="text" name="email" autocomplete="email" value="" required />
+		</div>
+
+		<div>
+			<label for="password">
+				Password
+			</label>
+			<input id="password" type="password" name="password" value="" required />
+		</div>
+
+		<button type="submit">Sign In</button>
+
+		if err != nil {
+		<p class="error">
+			{err.Error()}
+		</p>
+		}
+
+		if len(config.AllowSignupEmails) > 0 || config.AllowSignup {
+		<p>Do you need an account? <button type="button" hx-get="/auth/sign-up" hx-target="body">Register Now</button>
+		</p>
+		}
+	</form>
+</div>
+}

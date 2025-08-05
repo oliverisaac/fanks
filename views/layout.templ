@@ -1,0 +1,63 @@
+package views
+
+import "github.com/oliverisaac/fanks/types"
+
+templ Layout(user *types.User, title string) {
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>{ title }</title>
+	<meta name="description"
+		content="A command line tool that helps you build and test web app ideas blazingly-fast with a streamlined Go, HTMX, and SQLite stack. Authored by Damien Sedgwick." />
+	<link href="/static/css/style.min.css" rel="stylesheet" />
+	<link rel="icon" href="/static/icon.png" type="image/png" />
+	<script src="/static/htmx.min.js"></script>
+</head>
+
+<body id="body">
+	<header>
+		<nav>
+			<a href="/" title="Napp Home">
+				<img src="/static/icon.png" style="height:1em; width: auto;" />
+				Fanks
+			</a>
+			<ul>
+				if user.ID != 0 {
+				<li>
+					<button hx-post="/auth/sign-out" hx-target="body">Sign Out</button>
+				</li>
+				}
+				if user.ID == 0 {
+				<li>
+					<button hx-get="/auth/sign-in" hx-target="body">Sign In</button>
+				</li>
+				}
+			</ul>
+		</nav>
+	</header>
+	<main>
+		{ children... }
+	</main>
+	<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", (event) => {
+			document.body.addEventListener('htmx:beforeSwap', function (evt) {
+				if (evt.detail.xhr.status === 422 || evt.detail.xhr.status === 500) {
+					console.log("setting status to paint");
+					// allow 422 responses to swap as we are using this as a signal that
+					// a form was submitted with bad data and want to rerender with the
+					// errors
+					//
+					// set isError to false to avoid error logging in console
+					evt.detail.shouldSwap = true;
+					evt.detail.isError = false;
+				}
+			});
+		});
+	</script>
+</body>
+
+</html>
+}

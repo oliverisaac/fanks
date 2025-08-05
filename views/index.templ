@@ -1,0 +1,18 @@
+package views
+
+import "github.com/oliverisaac/fanks/types"
+
+templ Index(pageData types.HomePageData) {
+@Layout(pageData.User, "Fanks") {
+<section>
+	if pageData.User.ID > 0 {
+	@CreateNoteForm(types.Note{}, nil)
+	}
+	<div id="notes">
+		for _, note := range pageData.Notes {
+		@Note(note)
+		}
+	</div>
+</section>
+}
+}

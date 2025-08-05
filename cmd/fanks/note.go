@@ -5,23 +5,15 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/oliverisaac/fanks/types"
+	"github.com/oliverisaac/fanks/views"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
-type Note struct {
-	gorm.Model
-	UserID    uint
-	User      User
-	Content   string
-	CreatedAt time.Time  `gorm:"autoCreateTime"`
-	UpdatedAt *time.Time `gorm:"autoUpdateTime"`
-	DeletedAt *time.Time
-}
-
-func newNoteForUser(content string, user User) Note {
-	return Note{
+func newNoteForUser(content string, user types.User) types.Note {
+	return types.Note{
 		User:      user,
 		Content:   content,
 		CreatedAt: time.Now(),
@@ -40,15 +32,11 @@ func createNote(db *gorm.DB) echo.HandlerFunc {
 		note := newNoteForUser(content, user)
 
 		if err := db.Create(&note).Error; err != nil {
-			logrus.Error(errors.Wrap(err, "Saving note to db"))
-			return render(500, "sign-up-form", FormData{
-				Errors: map[string]string{
-					"email": "Oops! It appears we have had an error",
-				},
-				Values: map[string]string{},
-			})
+			err = errors.Wrap(err, "Saving note to db")
+			logrus.Error(err)
+			return render(c, 500, views.CreateNoteForm(note, err))
 		}
 
-		return render(200, "note", note)
+		return render(c, 500, views.CreateNoteForm(note, nil))
 	}
 }
