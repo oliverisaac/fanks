@@ -5,6 +5,13 @@ import (
 "fmt"
 )
 
+func valueContent(note types.Note) string {
+if note.ID == 0 {
+return note.Content
+}
+return ""
+}
+
 templ CreateNoteForm(note types.Note, prompt string, err error) {
 <div id="newnote" class="mb-4">
 	<div class="text-2xl text-neutral-100 italic space-y-2">
