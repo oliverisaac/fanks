@@ -51,6 +51,12 @@ func createNote(db *gorm.DB) echo.HandlerFunc {
 	}
 }
 
+func createNoteNoPrompt(db *gorm.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return render(c, 200, views.CreateNoteForm(types.Note{}, "I'm grateful for...", nil))
+	}
+}
+
 func randomPrompt() string {
 	prompts := []string{
 		"Today I am grateful for...",

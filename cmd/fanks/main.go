@@ -125,6 +125,7 @@ func run() error {
 	e.POST("/auth/sign-out", signOut())
 
 	// notes
+	e.GET("/note/create", createNoteNoPrompt(db))
 	e.POST("/note/create", createNote(db))
 	e.DELETE("/note/:id", deleteNote(db))
 

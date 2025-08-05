@@ -15,6 +15,10 @@ return ""
 templ CreateNoteForm(note types.Note, prompt string, err error) {
 <div id="newnote" class="mb-4">
 	<div class="text-2xl text-neutral-100 italic my-2">
+		<button hx-get="/note/create?prompt=default" hx-target="#newnote" hx-swap="outerHTML"
+			class="p-1 text-red-600 rounded-md hover:bg-neutral-700">
+			x
+		</button>
 		{ prompt }
 	</div>
 	<form hx-post="/note/create" hx-target="#newnote" class="flex items-start space-x-2">
