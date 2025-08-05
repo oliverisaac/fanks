@@ -35,20 +35,20 @@ func CreateNoteForm(note types.Note, err error) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"newnote\" class=\"mb-4\"><form hx-post=\"/note/create\" hx-target=\"#newnote\" class=\"flex items-center space-x-2\"><input type=\"text\" name=\"content\" placeholder=\"Today I am grateful for...\" value=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"newnote\" class=\"mb-4\"><form hx-post=\"/note/create\" hx-target=\"#newnote\" class=\"flex items-start space-x-2\"><textarea name=\"content\" placeholder=\"Today I am grateful for...\" class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-600\" rows=\"1\" oninput=\"this.style.height = &#39;auto&#39;; this.style.height = (this.scrollHeight) + &#39;px&#39;;\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(valueContent(note))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 18, Col: 102}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 21, Col: 108}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-600\"> <input type=\"submit\" class=\"px-4 py-2 text-white rounded-md bg-primary-600 hover:bg-primary-700\"></form>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</textarea> <input type=\"submit\" class=\"px-4 py-2 text-white rounded-md bg-primary-600 hover:bg-primary-700\"></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -60,7 +60,7 @@ func CreateNoteForm(note types.Note, err error) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 24, Col: 14}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 26, Col: 14}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -116,20 +116,20 @@ func Note(note types.Note) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("note-%d", note.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 36, Col: 41}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 38, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"p-4 mb-4 rounded-md bg-neutral-800\"><div class=\"text-lg text-white\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"p-4 mb-4 rounded-md bg-neutral-800 break-words\"><div class=\"text-lg text-white\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(note.Content)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 38, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 40, Col: 16}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -142,7 +142,7 @@ func Note(note types.Note) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(note.User.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 42, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 44, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -184,7 +184,7 @@ func SignUpForm(err error) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 84, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 86, Col: 15}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -231,7 +231,7 @@ func SignInForm(config types.Config, err error) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 124, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 126, Col: 15}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {

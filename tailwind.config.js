@@ -9,10 +9,10 @@ module.exports = {
     container: {
       center: true,
       padding: {
-        DEFAULT: "1rem",
-        mobile: "2rem",
-        tablet: "4rem",
-        desktop: "5rem",
+        DEFAULT: '0.1rem',
+        sm: '0.3rem',
+        lg: '2rem',
+        xl: '5rem',
       },
     },
     extend: {
