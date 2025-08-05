@@ -2,6 +2,10 @@ package views
 
 import "github.com/oliverisaac/fanks/types"
 
+func versionedPath(path string) string {
+return fmt.Sprintf("%s?version=%s", path, version.Tag)
+}
+
 templ Layout(user *types.User, title string) {
 <!DOCTYPE html>
 <html lang="en">
@@ -12,11 +16,11 @@ templ Layout(user *types.User, title string) {
 	<title>{ title }</title>
 	<meta name="description"
 		content="A command line tool that helps you build and test web app ideas blazingly-fast with a streamlined Go, HTMX, and SQLite stack. Authored by Damien Sedgwick." />
-	<link href="/static/css/style.min.css" rel="stylesheet" />
+	<link href={ versionedPath("/static/css/style.min.css") } rel="stylesheet" />
 	<link rel="icon" href="/static/icon.png" type="image/png" />
-	<script src="/static/htmx.min.js"></script>
+	<script src="/static/htmx-2.0.6.min.js"></script>
 
-	<link rel="manifest" href="/static/manifest.json" />
+	<link rel="manifest" href={ versionedPath("/static/manifest.json") } />
 	<meta name="mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="application-name" content="Fanks" />
