@@ -25,9 +25,14 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
-COPY . .
-
+COPY static ./static
+COPY views ./views
 RUN templ generate
+
+COPY cmd ./cmd
+COPY types ./types
+COPY version ./version
+COPY version ./version
 
 COPY --from=tailwind /workdir/static/css/style.min.css ./static/css/style.min.css
 
@@ -43,6 +48,8 @@ RUN echo "nonroot:x:10001:10001:NonRoot User:/:/sbin/nologin" > /etc/passwd
 FROM alpine AS release
 
 RUN apk add --no-cache tzdata
+
+ENV TZ America/Chicago
 
 # Copy static binary
 COPY --from=builder /fanks /fanks
