@@ -48,6 +48,11 @@ templ Layout(user *types.User, title string) {
 			<ul class="flex items-center space-x-4">
 				if user != nil {
 				<li>
+					<button id="push-subscribe-button"
+						class="px-4 py-2 text-white rounded-md bg-green-600 hover:bg-green-700">Subscribe to
+						Notifications</button>
+				</li>
+				<li>
 					<button hx-post="/auth/sign-out" hx-target="body"
 						class="px-4 py-2 text-white rounded-md bg-gray-600 hover:bg-gray-700">Sign Out</button>
 				</li>
@@ -88,6 +93,52 @@ templ Layout(user *types.User, title string) {
 			navigator.serviceWorker.register('/static/serviceWorker.js')
 				.then(reg => console.log('Service Worker registered successfully.'))
 				.catch(err => console.error('Service Worker registration failed:', err));
+		}
+
+		const vapidPublicKey = "BL4I9zM4s2B4v_2kpt2bTCNuWJkXzT5LPZ2sA2a-2p2l5g3aH-t8B8g8G2f0f2a8B6E8F0G2A4C6E8G0I2";
+
+		function urlBase64ToUint8Array(base64String) {
+			const padding = '='.repeat((4 - base64String.length % 4) % 4);
+			const base64 = (base64String + padding)
+				.replace(/\-/g, '+')
+				.replace(/_/g, '/');
+
+			const rawData = window.atob(base64);
+			const outputArray = new Uint8Array(rawData.length);
+
+			for (let i = 0; i < rawData.length; ++i) {
+				outputArray[i] = rawData.charCodeAt(i);
+			}
+			return outputArray;
+		}
+
+		if (document.getElementById('push-subscribe-button')) {
+			document.getElementById('push-subscribe-button').addEventListener('click', function () {
+				console.log("subscribe button pusshed")
+				if ('serviceWorker' in navigator && 'PushManager' in window) {
+					console.log("going to subscribe")
+					navigator.serviceWorker.ready.then(function (registration) {
+						console.log("going to subscribe to pushmanager")
+						registration.pushManager.subscribe({
+							userVisibleOnly: true,
+							applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+						}).then(function (subscription) {
+							console.log("Posting to /push/subscribe")
+							fetch('/push/subscribe', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify(subscription)
+							});
+						}).catch(function (err) {
+							console.error('Failed to subscribe to push notifications:', err);
+						});
+					});
+				} else {
+					console.log("Missing deps")
+				}
+			});
 		}
 	</script>
 </body>
