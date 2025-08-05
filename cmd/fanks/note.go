@@ -32,10 +32,11 @@ func createNote(db *gorm.DB) echo.HandlerFunc {
 
 		content := c.FormValue("content")
 		prompt := c.FormValue("prompt")
+		promptName := c.FormValue("promptName")
 		note := newNoteForUser(prompt, content, user)
 
 		if note.Content == "" {
-			return render(c, 422, views.CreateNoteForm(note, prompt, fmt.Errorf("you cannot have an empty note")))
+			return render(c, 422, views.CreateNoteForm(note, promptName, prompt, fmt.Errorf("you cannot have an empty note")))
 		}
 
 		if err := db.Create(&note).Error; err != nil {
@@ -44,16 +45,26 @@ func createNote(db *gorm.DB) echo.HandlerFunc {
 			if prompt == "" {
 				prompt = randomPrompt()
 			}
-			return render(c, 500, views.CreateNoteForm(note, prompt, err))
+			return render(c, 500, views.CreateNoteForm(note, promptName, prompt, err))
 		}
 
-		return render(c, 200, views.CreateNoteForm(note, randomPrompt(), nil))
+		return render(c, 200, views.CreateNoteForm(note, "random", randomPrompt(), nil))
 	}
 }
 
 func createNoteNoPrompt(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return render(c, 200, views.CreateNoteForm(types.Note{}, "I'm grateful for...", nil))
+		promptName := c.FormValue("promptName")
+		var prompt string
+
+		if promptName != "default" {
+			promptName = "default"
+			prompt = "Today I am grateful for..."
+		} else {
+			promptName = "random"
+			prompt = randomPrompt()
+		}
+		return render(c, 200, views.CreateNoteForm(types.Note{}, promptName, prompt, nil))
 	}
 }
 

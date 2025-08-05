@@ -36,7 +36,7 @@ func Index(pageData types.HomePageData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if pageData.User.ID > 0 {
-				templ_7745c5c3_Err = CreateNoteForm(types.Note{}, pageData.Prompt, nil).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = CreateNoteForm(types.Note{}, "random", pageData.Prompt, nil).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

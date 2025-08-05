@@ -6,7 +6,7 @@ templ Index(pageData types.HomePageData) {
 @Layout(pageData.User, "Fanks") {
 <section class="container mx-auto">
 	if pageData.User.ID > 0 {
-	@CreateNoteForm(types.Note{}, pageData.Prompt, nil)
+	@CreateNoteForm(types.Note{}, "random", pageData.Prompt, nil)
 	}
 	<div id="notes" class="mt-4 space-y-4">
 		for _, note := range pageData.Notes {

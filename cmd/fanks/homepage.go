@@ -20,7 +20,7 @@ func homePageHandler(cfg types.Config, db *gorm.DB) echo.HandlerFunc {
 			}
 
 			for i, note := range notes {
-				note.IsUserNote = true
+				note.IsUserNote = note.UserID == user.ID
 				notes[i] = note
 			}
 

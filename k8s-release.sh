@@ -29,16 +29,22 @@ resources=$(kubectl get sts,deployments --all-namespaces -o jsonpath='{range .it
 echo "$resources" |
   while read namespace resource image; do
     if [[ $image == ${IMAGE_NAME}* ]]; then
-      while true; do
+      deployed=false
+      for ((i = 0; i < 60; i++)); do
         echo_do kubectl rollout restart -n "$namespace" "$resource"
         if ! echo_do kubectl get -n $namespace pods -o yaml | grep -qFe "$image_hash"; then
           echo "Unable to find $image_hash in manifest. Sleeping for 3 and trying again..."
           sleep 3
         else
+          deployed=true
           echo "Deployment has updated image hash: ${image_hash}"
           break
         fi
       done
+      if ! $deployed; then
+        echo "Failed to deploy!"
+        exit 1
+      fi
     fi
   done
 
