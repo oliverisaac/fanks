@@ -107,10 +107,12 @@ func run() error {
 		return errors.Wrap(err, "failed to connect database")
 	}
 
-	err = db.AutoMigrate(&types.User{}, &types.Note{})
+	err = db.AutoMigrate(&types.User{}, &types.Note{}, &types.PushSubscription{})
 	if err != nil {
 		return errors.Wrap(err, "Failed to migrate")
 	}
+
+	sendPushNotifications(db)
 
 	// Pages
 	e.GET("/", homePageHandler(cfg, db))
@@ -128,6 +130,9 @@ func run() error {
 	e.GET("/note/create", createNoteNoPrompt(db))
 	e.POST("/note/create", createNote(db))
 	e.DELETE("/note/:id", deleteNote(db))
+
+	// push
+	e.POST("/push/subscribe", saveSubscription(db))
 
 	return e.Start(":8080")
 }
