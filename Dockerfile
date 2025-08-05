@@ -44,7 +44,6 @@ FROM alpine AS release
 
 # Copy static binary
 COPY --from=builder /fanks /fanks
-COPY --from=builder /workdir/views /views
 
 # Copy CA certificates
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
