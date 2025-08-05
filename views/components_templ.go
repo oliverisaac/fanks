@@ -135,29 +135,42 @@ func Note(note types.Note) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"mt-2 text-sm text-neutral-400\"></div><div class=\"flex items-center justify-between mt-1\"><div class=\"text-sm font-bold text-primary-400\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"mt-2 text-sm text-neutral-400\"></div><div class=\"flex items-center justify-between mt-1\"><div class=\"flex items-center space-x-2 text-sm\"><div class=\"font-bold text-primary-400\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(note.User.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 45, Col: 19}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 46, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><button hx-delete=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"text-neutral-500\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var8 string
-		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/note/%d", note.ID))
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(note.CreatedAt.Format("Jan 2, 2006"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 47, Col: 54}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 49, Col: 42}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><button hx-delete=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var9 string
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/note/%d", note.ID))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 52, Col: 54}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -165,16 +178,16 @@ func Note(note types.Note) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var9 string
-		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("#note-%d", note.ID))
+		var templ_7745c5c3_Var10 string
+		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("#note-%d", note.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 47, Col: 101}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 52, Col: 101}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-swap=\"outerHTML\" hx-confirm=\"Are you sure you want to delete this note?\" class=\"p-1 text-red-600 rounded-md hover:bg-neutral-700\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"3 6 5 6 21 6\"></polyline> <path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"></path> <line x1=\"10\" y1=\"11\" x2=\"10\" y2=\"17\"></line> <line x1=\"14\" y1=\"11\" x2=\"14\" y2=\"17\"></line></svg></button></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-swap=\"outerHTML\" hx-confirm=\"Are you sure you want to delete this note?\" class=\"p-1 text-red-600 rounded-md hover:bg-neutral-700\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"3 6 5 6 21 6\"></polyline><path d=\"M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2\"></path><line x1=\"10\" y1=\"11\" x2=\"10\" y2=\"17\"></line><line x1=\"14\" y1=\"11\" x2=\"14\" y2=\"17\"></line></svg></button></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -193,9 +206,9 @@ func SignUpForm(err error) templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var10 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var10 == nil {
-			templ_7745c5c3_Var10 = templ.NopComponent
+		templ_7745c5c3_Var11 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var11 == nil {
+			templ_7745c5c3_Var11 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"sign-up-form\" class=\"flex flex-col items-center justify-center h-screen\"><form hx-post=\"/auth/sign-up\" hx-target=\"body\" class=\"w-full max-w-md p-8 space-y-6 rounded-lg bg-neutral-800\"><a href=\"/\" title=\"Napp Home\" class=\"flex items-center justify-center mb-6 space-x-2 text-2xl font-bold text-white\">Fanks</a><div><label for=\"name\" class=\"block mb-2 text-sm font-bold text-neutral-400\">Name</label> <input id=\"name\" type=\"text\" name=\"name\" autocomplete=\"name\" value=\"\" required class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-600\"></div><div><label for=\"email\" class=\"block mb-2 text-sm font-bold text-neutral-400\">Email</label> <input id=\"email\" type=\"text\" name=\"email\" autocomplete=\"email\" value=\"\" required class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-600\"></div><div><label for=\"password\" class=\"block mb-2 text-sm font-bold text-neutral-400\">Password</label> <input id=\"password\" type=\"password\" name=\"password\" value=\"\" required class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-600\"></div><button type=\"submit\" class=\"w-full px-4 py-2 text-white rounded-md bg-primary-600 hover:bg-primary-700\">Register</button> ")
@@ -207,12 +220,12 @@ func SignUpForm(err error) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var11 string
-			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
+			var templ_7745c5c3_Var12 string
+			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 99, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 96, Col: 15}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -240,9 +253,9 @@ func SignInForm(config types.Config, err error) templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var12 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var12 == nil {
-			templ_7745c5c3_Var12 = templ.NopComponent
+		templ_7745c5c3_Var13 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var13 == nil {
+			templ_7745c5c3_Var13 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"sign-in-form\" class=\"flex flex-col items-center justify-center h-screen\"><form hx-post=\"/auth/sign-in\" hx-target=\"body\" class=\"w-full max-w-md p-8 space-y-6 rounded-lg bg-neutral-800\"><a href=\"/\" title=\"Napp Home\" class=\"flex items-center justify-center mb-6 space-x-2 text-2xl font-bold text-white\">Fanks</a><div><label for=\"email\" class=\"block mb-2 text-sm font-bold text-neutral-400\">Email</label> <input id=\"email\" type=\"text\" name=\"email\" autocomplete=\"email\" value=\"\" required class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-600\"></div><div><label for=\"password\" class=\"block mb-2 text-sm font-bold text-neutral-400\">Password</label> <input id=\"password\" type=\"password\" name=\"password\" value=\"\" required class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-600\"></div><button type=\"submit\" class=\"w-full px-4 py-2 text-white rounded-md bg-primary-600 hover:bg-primary-700\">Sign In</button> ")
@@ -254,12 +267,12 @@ func SignInForm(config types.Config, err error) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var13 string
-			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
+			var templ_7745c5c3_Var14 string
+			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 139, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 136, Col: 15}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
