@@ -67,8 +67,7 @@ templ Note(note types.Note) {
 				<div class="text-neutral-500 cursor-pointer" tabindex="0">
 					{ note.CreatedAt.Format("Jan 2, 2006") }
 				</div>
-				<div
-					class="absolute bottom-full left-1/2 -translate-x-1/2 px-2 py-1 text-sm text-white rounded-md bg-neutral-900 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 pointer-events-none">
+				<div class="absolute bottom-full left-1/2 -translate-x-1/2 px-2 py-1 text-sm text-white rounded-md bg-neutral-900 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 pointer-events-none w-max">
 					{ note.CreatedAt.Format(time.RFC1123Z) }
 				</div>
 			</div>
