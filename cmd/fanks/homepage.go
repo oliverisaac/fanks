@@ -19,12 +19,14 @@ func homePageHandler(cfg types.Config, db *gorm.DB) echo.HandlerFunc {
 				pageData.WithError(err)
 			}
 
-			pageData.
+			pageData = pageData.
 				WithUser(user).
 				WithNotes(notes)
 		} else {
 			logrus.Infof("Generating anonymous homepage")
 		}
+
+		pageData = pageData.WithPrompt(randomPrompt())
 
 		return render(c, 200, views.Index(pageData))
 	}
