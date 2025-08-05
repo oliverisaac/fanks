@@ -2,6 +2,11 @@
 
 set -eEuo pipefail
 
+if git status --porcelain | grep -q . ; then
+  echo >&2 "Git is dirty, commit before releasing..."
+  exit 1
+fi
+
 IMAGE_NAME="$1"
 
 function echo_do() {

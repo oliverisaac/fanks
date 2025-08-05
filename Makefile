@@ -33,7 +33,7 @@ docker-run:
 .PHONY: docker-build
 docker-build: templ-generate docker-run
 	docker kill ${APP_NAME} || true
-	docker build -t oliverisaac/${APP_NAME}:latest .
+	docker build --build-arg VERSION_TAG="$$(git describe --tags HEAD)" -t oliverisaac/${APP_NAME}:latest .
 
 cert.key:
 	openssl genrsa -out cert.key 2048
