@@ -42,6 +42,8 @@ RUN echo "nonroot:x:10001:10001:NonRoot User:/:/sbin/nologin" > /etc/passwd
 # ---------- Stage 2: Final ----------
 FROM alpine AS release
 
+RUN apk add --no-cache tzdata
+
 # Copy static binary
 COPY --from=builder /fanks /fanks
 
