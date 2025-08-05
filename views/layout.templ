@@ -1,6 +1,9 @@
 package views
 
-import "github.com/oliverisaac/fanks/types"
+import (
+"github.com/oliverisaac/fanks/types"
+"fmt"
+)
 
 func versionedPath(path string) string {
 return fmt.Sprintf("%s?version=%s", path, version.Tag)

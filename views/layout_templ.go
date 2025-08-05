@@ -10,7 +10,14 @@ import "context"
 import "io"
 import "bytes"
 
-import "github.com/oliverisaac/fanks/types"
+import (
+	"fmt"
+	"github.com/oliverisaac/fanks/types"
+)
+
+func versionedPath(path string) string {
+	return fmt.Sprintf("%s?version=%s", path, version.Tag)
+}
 
 func Layout(user *types.User, title string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -32,13 +39,39 @@ func Layout(user *types.User, title string) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layout.templ`, Line: 12, Col: 15}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layout.templ`, Line: 19, Col: 15}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><meta name=\"description\" content=\"A command line tool that helps you build and test web app ideas blazingly-fast with a streamlined Go, HTMX, and SQLite stack. Authored by Damien Sedgwick.\"><link href=\"/static/css/style.min.css\" rel=\"stylesheet\"><link rel=\"icon\" href=\"/static/icon.png\" type=\"image/png\"><script src=\"/static/htmx.min.js\"></script><link rel=\"manifest\" href=\"/static/manifest.json\"><meta name=\"mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"application-name\" content=\"Fanks\"><meta name=\"apple-mobile-web-app-title\" content=\"Fanks\"><!--\n    <meta name=\"theme-color\" content=\"#2c3e50\"/> \n    <meta name=\"msapplication-navbutton-color\" content=\"#2c3e50\"/>\n    --><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"><link rel=\"icon\" type=\"image/png\" href=\"/static/icon-512.png\"><link rel=\"apple-touch-icon\" href=\"/static/icon-512.png\"></head><body id=\"body\" class=\"bg-neutral-900 text-neutral-100\"><header class=\"bg-neutral-800\"><nav class=\"container flex items-center justify-between p-4 mx-auto\"><a href=\"/\" title=\"Napp Home\" class=\"flex items-center space-x-2\"><img src=\"/static/icon.png\" class=\"h-10 w-10\" alt=\"Icon\"> <span class=\"text-4xl font-bold\">Fanks</span></a><ul class=\"flex items-center space-x-4\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><meta name=\"description\" content=\"A command line tool that helps you build and test web app ideas blazingly-fast with a streamlined Go, HTMX, and SQLite stack. Authored by Damien Sedgwick.\"><link href=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var3 string
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(versionedPath("/static/css/style.min.css"))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layout.templ`, Line: 22, Col: 56}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" rel=\"stylesheet\"><link rel=\"icon\" href=\"/static/icon.png\" type=\"image/png\"><script src=\"/static/htmx-2.0.6.min.js\"></script><link rel=\"manifest\" href=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var4 string
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(versionedPath("/static/manifest.json"))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layout.templ`, Line: 26, Col: 67}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><meta name=\"mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"application-name\" content=\"Fanks\"><meta name=\"apple-mobile-web-app-title\" content=\"Fanks\"><!--\n    <meta name=\"theme-color\" content=\"#2c3e50\"/> \n    <meta name=\"msapplication-navbutton-color\" content=\"#2c3e50\"/>\n    --><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"><link rel=\"icon\" type=\"image/png\" href=\"/static/icon-512.png\"><link rel=\"apple-touch-icon\" href=\"/static/icon-512.png\"></head><body id=\"body\" class=\"bg-neutral-900 text-neutral-100\"><header class=\"bg-neutral-800\"><nav class=\"container flex items-center justify-between p-4 mx-auto\"><a href=\"/\" title=\"Napp Home\" class=\"flex items-center space-x-2\"><img src=\"/static/icon.png\" class=\"h-10 w-10\" alt=\"Icon\"> <span class=\"text-4xl font-bold\">Fanks</span></a><ul class=\"flex items-center space-x-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
