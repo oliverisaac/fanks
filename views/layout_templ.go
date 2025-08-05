@@ -76,13 +76,12 @@ func Layout(user *types.User, title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if user.ID != 0 {
+		if user != nil {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><button hx-post=\"/auth/sign-out\" hx-target=\"body\" class=\"px-4 py-2 text-white rounded-md bg-gray-600 hover:bg-gray-700\">Sign Out</button></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		}
-		if user.ID == 0 {
+		} else {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><button hx-get=\"/auth/sign-in\" hx-target=\"body\" class=\"px-4 py-2 text-white rounded-md bg-primary-600 hover:bg-primary-700\">Sign In</button></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

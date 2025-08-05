@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM --platform=$BUILDPLATFORM d3fk/tailwindcss:v3 AS tailwind
 
 WORKDIR /workdir
@@ -12,18 +13,22 @@ RUN [ "/tailwindcss", "-i", "./static/css/input.css", "-o", "./static/css/style.
 # ---------- Stage 1: Build ----------
 FROM golang:1.24-alpine AS builder
 
+ENV GOCACHE=/go-build-cache
+ENV GOMODCACHE=/go-mod-cache
 ENV CGO_ENABLED=0 
 
 # Install CA certs for later copying
 RUN apk add --no-cache git ca-certificates
 
-RUN go install github.com/a-h/templ/cmd/templ@latest
+RUN --mount=type=cache,target=/go-build-cache --mount=type=cache,target=/go-mod-cache \
+   go install github.com/a-h/templ/cmd/templ@latest
 
 WORKDIR /app
 
 # Copy go mod files and download deps
 COPY go.mod go.sum ./
-RUN go mod download
+RUN --mount=type=cache,target=/go-build-cache --mount=type=cache,target=/go-mod-cache \
+   go mod download
 
 COPY static ./static
 COPY views ./views
@@ -39,7 +44,8 @@ COPY --from=tailwind /workdir/static/css/style.min.css ./static/css/style.min.cs
 ARG VERSION_TAG="dev"
 
 # Build static Go binary
-RUN go build -ldflags "-X github.com/oliverisaac/fanks/version.Tag=$VERSION_TAG" -o /fanks ./cmd/fanks/
+RUN --mount=type=cache,target=/go-build-cache --mount=type=cache,target=/go-mod-cache \
+  go build -ldflags "-X github.com/oliverisaac/fanks/version.Tag=$VERSION_TAG" -o /fanks ./cmd/fanks/
 
 # Create a minimal passwd file for non-root user (UID 10001)
 RUN echo "nonroot:x:10001:10001:NonRoot User:/:/sbin/nologin" > /etc/passwd
