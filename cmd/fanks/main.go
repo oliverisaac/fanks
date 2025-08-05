@@ -112,7 +112,7 @@ func run() error {
 		return errors.Wrap(err, "Failed to migrate")
 	}
 
-	sendPushNotifications(db)
+	sendPushNotifications(cfg, db)
 
 	// Pages
 	e.GET("/", homePageHandler(cfg, db))

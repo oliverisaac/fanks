@@ -1,4 +1,3 @@
-
 package main
 
 import (
@@ -15,10 +14,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const webPushVapidPublicKey = "BL4I9zM4s2B4v_2kpt2bTCNuWJkXzT5LPZ2sA2a-2p2l5g3aH-t8B8g8G2f0f2a8B6E8F0G2A4C6E8G0I2"
-const webPushVapidPrivateKey = "BL4I9zM4s2B4v_2kpt2bTCNuWJkXzT5LPZ2sA2a-2p2l5g3aH-t8B8g8G2f0f2a8B6E8F0G2A4C6E8G0I2"
-
-func sendPushNotifications(db *gorm.DB) {
+func sendPushNotifications(cfg types.Config, db *gorm.DB) {
 	ticker := time.NewTicker(1 * time.Minute)
 	go func() {
 		for range ticker.C {
@@ -36,7 +32,7 @@ func sendPushNotifications(db *gorm.DB) {
 				}
 
 				for _, user := range users {
-					sendPushNotificationToUser(user)
+					sendPushNotificationToUser(cfg, user)
 				}
 			}
 		}
@@ -49,7 +45,7 @@ func getAllUsersWithSubscriptions(db *gorm.DB) ([]types.User, error) {
 	return users, err
 }
 
-func sendPushNotificationToUser(user types.User) {
+func sendPushNotificationToUser(cfg types.Config, user types.User) {
 	for _, subData := range user.PushSubscriptions {
 		sub := &webpush.Subscription{
 			Endpoint: subData.Endpoint,
@@ -60,8 +56,8 @@ func sendPushNotificationToUser(user types.User) {
 		}
 
 		resp, err := webpush.SendNotification([]byte("{\"title\":\"Fanks\",\"body\":\"What are you thankful for today?\"}"), sub, &webpush.Options{
-			VAPIDPublicKey:  webPushVapidPublicKey,
-			VAPIDPrivateKey: webPushVapidPrivateKey,
+			VAPIDPublicKey:  cfg.VapidPublicKey,
+			VAPIDPrivateKey: cfg.VapidPrivateKey,
 			TTL:             30,
 		})
 		if err != nil {
