@@ -25,12 +25,9 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy app source
-COPY ./views/ /workdir/views/
+COPY . .
 
 RUN templ generate
-
-COPY . .
 
 COPY --from=tailwind /workdir/static/css/style.min.css ./static/css/style.min.css
 
