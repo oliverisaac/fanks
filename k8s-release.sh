@@ -2,7 +2,7 @@
 
 set -eEuo pipefail
 
-if git status --porcelain | grep -q . ; then
+if git status --porcelain | grep -q .; then
   echo >&2 "Git is dirty, commit before releasing..."
   exit 1
 fi
@@ -17,7 +17,7 @@ function echo_do() {
   "${@}"
 }
 
-BUILDKIT_PROGRESS=plain docker buildx build --platform linux/amd64 --target release --push -t "${IMAGE_NAME}" .
+BUILDKIT_PROGRESS=plain docker buildx build --build-arg VERSION_TAG="$(git rev-parse --short HEAD)" --platform linux/amd64 --target release --push -t "${IMAGE_NAME}" .
 
 base_image_name="${IMAGE_NAME%:*}"
 
