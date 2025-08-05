@@ -19,6 +19,11 @@ func homePageHandler(cfg types.Config, db *gorm.DB) echo.HandlerFunc {
 				pageData.WithError(err)
 			}
 
+			for i, note := range notes {
+				note.IsUserNote = true
+				notes[i] = note
+			}
+
 			pageData = pageData.
 				WithUser(user).
 				WithNotes(notes)

@@ -15,10 +15,11 @@ import (
 
 func newNoteForUser(prompt, content string, user types.User) types.Note {
 	return types.Note{
-		User:      user,
-		Prompt:    prompt,
-		Content:   content,
-		CreatedAt: time.Now(),
+		User:       user,
+		Prompt:     prompt,
+		IsUserNote: true,
+		Content:    content,
+		CreatedAt:  time.Now(),
 	}
 }
 
