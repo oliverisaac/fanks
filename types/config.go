@@ -19,6 +19,8 @@ type Config struct {
 	AllowSignupEmails []string
 	CookeSecret       []byte
 	DBPath            string
+	VapidPublicKey    string
+	VapidPrivateKey   string
 }
 
 func ConfigFromEnv() (Config, error) {
@@ -57,6 +59,16 @@ func ConfigFromEnv() (Config, error) {
 		retErr = errs.Join(retErr, fmt.Errorf("You must define env FANKS_DB_PATH"))
 	} else if _, err := os.Stat(path.Dir(ret.DBPath)); err != nil {
 		retErr = errs.Join(retErr, errors.Wrap(err, "Directory for FANKS_DB_PATH must exist"))
+	}
+
+	ret.VapidPrivateKey, ok = os.LookupEnv("VAPID_PRIVATE_KEY")
+	if !ok {
+		retErr = errs.Join(retErr, fmt.Errorf("You must define env VAPID_PRIVATE_KEY"))
+	}
+
+	ret.VapidPublicKey, ok = os.LookupEnv("VAPID_PUBLIC_KEY")
+	if !ok {
+		retErr = errs.Join(retErr, fmt.Errorf("You must define env VAPID_PUBLIC_KEY"))
 	}
 
 	return ret, retErr

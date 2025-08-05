@@ -3,7 +3,7 @@ package views
 import "github.com/oliverisaac/fanks/types"
 
 templ Index(pageData types.HomePageData) {
-@Layout(pageData.User, "Fanks") {
+@Layout(pageData.Config, pageData.User, "Fanks") {
 <section class="container mx-auto">
 	if pageData.User.ID > 0 {
 	@CreateNoteForm(types.Note{}, "random", pageData.Prompt, nil)

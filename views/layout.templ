@@ -10,7 +10,7 @@ func versionedPath(path string) string {
 return fmt.Sprintf("%s?version=%s", path, version.Tag)
 }
 
-templ Layout(user *types.User, title string) {
+templ Layout(cfg types.Config, user *types.User, title string) {
 <!DOCTYPE html>
 <html lang="en">
 
@@ -87,16 +87,49 @@ templ Layout(user *types.User, title string) {
 	</script>
 
 	<script>
-		let wakeLock = null;
+		function setupNotifications(vapidPublicKey) {
+			let wakeLock = null;
 
-		// Register Service Worker
-		if ('serviceWorker' in navigator) {
-			navigator.serviceWorker.register('/static/serviceWorker.js')
-				.then(reg => console.log('Service Worker registered successfully.'))
-				.catch(err => console.error('Service Worker registration failed:', err));
+			// Register Service Worker
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/static/serviceWorker.js')
+					.then(function (reg) {
+						console.log('Service Worker registered successfully.');
+						if (document.getElementById('push-subscribe-button')) {
+							document.getElementById('push-subscribe-button').addEventListener('click', function () {
+								console.log("subscribe button pusshed")
+								if ('serviceWorker' in navigator && 'PushManager' in window) {
+									Notification.requestPermission().then(function (permission) {
+										if (permission === 'granted') {
+											console.log("going to subscribe")
+											reg.pushManager.subscribe({
+												userVisibleOnly: true,
+												applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
+											}).then(function (subscription) {
+												console.log("Posting to /push/subscribe")
+												fetch('/push/subscribe', {
+													method: 'POST',
+													headers: {
+														'Content-Type': 'application/json'
+													},
+													body: JSON.stringify(subscription)
+												});
+											}).catch(function (err) {
+												console.error('Failed to subscribe to push notifications:', err);
+											});
+										} else {
+											console.log("Permission not granted for notifications");
+										}
+									});
+								} else {
+									console.log("Missing deps")
+								}
+							});
+						}
+					})
+					.catch(err => console.error('Service Worker registration failed:', err));
+			}
 		}
-
-		const vapidPublicKey = "BL4I9zM4s2B4v_2kpt2bTCNuWJkXzT5LPZ2sA2a-2p2l5g3aH-t8B8g8G2f0f2a8B6E8F0G2A4C6E8G0I2";
 
 		function urlBase64ToUint8Array(base64String) {
 			const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -112,36 +145,8 @@ templ Layout(user *types.User, title string) {
 			}
 			return outputArray;
 		}
-
-		if (document.getElementById('push-subscribe-button')) {
-			document.getElementById('push-subscribe-button').addEventListener('click', function () {
-				console.log("subscribe button pusshed")
-				if ('serviceWorker' in navigator && 'PushManager' in window) {
-					console.log("going to subscribe")
-					navigator.serviceWorker.ready.then(function (registration) {
-						console.log("going to subscribe to pushmanager")
-						registration.pushManager.subscribe({
-							userVisibleOnly: true,
-							applicationServerKey: urlBase64ToUint8Array(vapidPublicKey)
-						}).then(function (subscription) {
-							console.log("Posting to /push/subscribe")
-							fetch('/push/subscribe', {
-								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json'
-								},
-								body: JSON.stringify(subscription)
-							});
-						}).catch(function (err) {
-							console.error('Failed to subscribe to push notifications:', err);
-						});
-					});
-				} else {
-					console.log("Missing deps")
-				}
-			});
-		}
 	</script>
+	@templ.JSFuncCall("setupNotifications", cfg.VapidPublicKey)
 </body>
 
 </html>
