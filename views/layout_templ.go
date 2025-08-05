@@ -77,7 +77,15 @@ func Layout(user *types.User, title string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if user != nil {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><button id=\"push-subscribe-button\" class=\"px-4 py-2 text-white rounded-md bg-green-600 hover:bg-green-700\">Subscribe to Notifications</button></li><li><button hx-post=\"/auth/sign-out\" hx-target=\"body\" class=\"px-4 py-2 text-white rounded-md bg-gray-600 hover:bg-gray-700\">Sign Out</button></li>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><button id=\"push-subscribe-button\" class=\"px-4 py-2 text-white rounded-md bg-green-600 hover:bg-green-700\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = notificationBellSVG("h-6, w-6").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></li><li><button hx-post=\"/auth/sign-out\" hx-target=\"body\" class=\"px-4 py-2 text-white rounded-md bg-gray-600 hover:bg-gray-700\">Sign Out</button></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
