@@ -35,7 +35,7 @@ func CreateNoteForm(note types.Note, prompt string, err error) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"newnote\" class=\"mb-4\"><div class=\"text-2xl text-neutral-100 italic space-y-2\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"newnote\" class=\"mb-4\"><div class=\"text-2xl text-neutral-100 italic mx-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
