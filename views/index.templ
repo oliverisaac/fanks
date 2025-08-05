@@ -4,11 +4,11 @@ import "github.com/oliverisaac/fanks/types"
 
 templ Index(pageData types.HomePageData) {
 @Layout(pageData.User, "Fanks") {
-<section>
+<section class="container mx-auto">
 	if pageData.User.ID > 0 {
 	@CreateNoteForm(types.Note{}, nil)
 	}
-	<div id="notes">
+	<div id="notes" class="mt-4 space-y-4">
 		for _, note := range pageData.Notes {
 		@Note(note)
 		}

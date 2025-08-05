@@ -35,7 +35,7 @@ func CreateNoteForm(note types.Note, err error) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"newnote\"><form hx-post=\"/note/create\"><input type=\"text\" name=\"content\" placeholder=\"Today I am grateful for...\" value=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"newnote\" class=\"mb-4\"><form hx-post=\"/note/create\" hx-target=\"#newnote\" class=\"flex items-center space-x-2\"><input type=\"text\" name=\"content\" placeholder=\"Today I am grateful for...\" value=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -48,19 +48,19 @@ func CreateNoteForm(note types.Note, err error) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"> <input type=\"submit\"></form>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-primary-600\"> <input type=\"submit\" class=\"px-4 py-2 text-white rounded-md bg-primary-600 hover:bg-primary-700\"></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if err != nil {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"error\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"mt-2 text-sm text-red-500\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 23, Col: 14}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 24, Col: 14}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -116,33 +116,33 @@ func Note(note types.Note) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("note-%d", note.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 35, Col: 41}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 36, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"note\"><div class=\"content\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"p-4 mb-4 rounded-md bg-neutral-800\"><div class=\"text-lg text-white\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(note.Content)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 37, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 38, Col: 16}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"time\"></div><div class=\"creator\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"mt-2 text-sm text-neutral-400\"></div><div class=\"mt-1 text-sm font-bold text-primary-400\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(note.User.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 41, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 42, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -172,19 +172,19 @@ func SignUpForm(err error) templ.Component {
 			templ_7745c5c3_Var8 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"sign-up-form\"><form hx-post=\"/auth/sign-up\" hx-target=\"body\"><a href=\"/\" title=\"Napp Home\">Fanks</a><div><label for=\"name\">Name</label> <input id=\"name\" type=\"text\" name=\"name\" autocomplete=\"name\" value=\"\" required></div><div><label for=\"email\">Email</label> <input id=\"email\" type=\"text\" name=\"email\" autocomplete=\"email\" value=\"\" required></div><div><label for=\"password\">Password</label> <input id=\"password\" type=\"password\" name=\"password\" value=\"\" required></div><button type=\"submit\">Register</button> ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"sign-up-form\" class=\"flex flex-col items-center justify-center h-screen\"><form hx-post=\"/auth/sign-up\" hx-target=\"body\" class=\"w-full max-w-md p-8 space-y-6 rounded-lg bg-neutral-800\"><a href=\"/\" title=\"Napp Home\" class=\"flex items-center justify-center mb-6 space-x-2 text-2xl font-bold text-white\">Fanks</a><div><label for=\"name\" class=\"block mb-2 text-sm font-bold text-neutral-400\">Name</label> <input id=\"name\" type=\"text\" name=\"name\" autocomplete=\"name\" value=\"\" required class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-600\"></div><div><label for=\"email\" class=\"block mb-2 text-sm font-bold text-neutral-400\">Email</label> <input id=\"email\" type=\"text\" name=\"email\" autocomplete=\"email\" value=\"\" required class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-600\"></div><div><label for=\"password\" class=\"block mb-2 text-sm font-bold text-neutral-400\">Password</label> <input id=\"password\" type=\"password\" name=\"password\" value=\"\" required class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-600\"></div><button type=\"submit\" class=\"w-full px-4 py-2 text-white rounded-md bg-primary-600 hover:bg-primary-700\">Register</button> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if err != nil {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"error\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"mt-2 text-sm text-red-500\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 78, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 84, Col: 15}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -195,7 +195,7 @@ func SignUpForm(err error) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p>Already have an account? <button type=\"button\" hx-get=\"/auth/sign-in\" hx-target=\"body\">Sign In</button></p></form></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"text-sm text-center text-neutral-400\">Already have an account? <button type=\"button\" hx-get=\"/auth/sign-in\" hx-target=\"body\" class=\"font-bold text-primary-400 hover:underline\">Sign In</button></p></form></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -219,19 +219,19 @@ func SignInForm(config types.Config, err error) templ.Component {
 			templ_7745c5c3_Var10 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"sign-in-form\"><form hx-post=\"/auth/sign-in\" hx-target=\"body\"><a href=\"/\" title=\"Napp Home\">Fanks</a><div><label for=\"email\">Email</label> <input id=\"email\" type=\"text\" name=\"email\" autocomplete=\"email\" value=\"\" required></div><div><label for=\"password\">Password</label> <input id=\"password\" type=\"password\" name=\"password\" value=\"\" required></div><button type=\"submit\">Sign In</button> ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"sign-in-form\" class=\"flex flex-col items-center justify-center h-screen\"><form hx-post=\"/auth/sign-in\" hx-target=\"body\" class=\"w-full max-w-md p-8 space-y-6 rounded-lg bg-neutral-800\"><a href=\"/\" title=\"Napp Home\" class=\"flex items-center justify-center mb-6 space-x-2 text-2xl font-bold text-white\">Fanks</a><div><label for=\"email\" class=\"block mb-2 text-sm font-bold text-neutral-400\">Email</label> <input id=\"email\" type=\"text\" name=\"email\" autocomplete=\"email\" value=\"\" required class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-600\"></div><div><label for=\"password\" class=\"block mb-2 text-sm font-bold text-neutral-400\">Password</label> <input id=\"password\" type=\"password\" name=\"password\" value=\"\" required class=\"w-full px-4 py-2 text-white rounded-md bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-primary-600\"></div><button type=\"submit\" class=\"w-full px-4 py-2 text-white rounded-md bg-primary-600 hover:bg-primary-700\">Sign In</button> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if err != nil {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"error\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"mt-2 text-sm text-red-500\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(err.Error())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 113, Col: 15}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/components.templ`, Line: 124, Col: 15}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -243,7 +243,7 @@ func SignInForm(config types.Config, err error) templ.Component {
 			}
 		}
 		if len(config.AllowSignupEmails) > 0 || config.AllowSignup {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p>Do you need an account? <button type=\"button\" hx-get=\"/auth/sign-up\" hx-target=\"body\">Register Now</button></p>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"text-sm text-center text-neutral-400\">Do you need an account? <button type=\"button\" hx-get=\"/auth/sign-up\" hx-target=\"body\" class=\"font-bold text-primary-400 hover:underline\">Register Now</button></p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

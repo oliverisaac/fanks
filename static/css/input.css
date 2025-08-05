@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.btn-red:hover {
+@apply bg-red-700;
+}

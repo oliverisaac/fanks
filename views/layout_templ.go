@@ -38,23 +38,23 @@ func Layout(user *types.User, title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><meta name=\"description\" content=\"A command line tool that helps you build and test web app ideas blazingly-fast with a streamlined Go, HTMX, and SQLite stack. Authored by Damien Sedgwick.\"><link href=\"/static/css/style.min.css\" rel=\"stylesheet\"><link rel=\"icon\" href=\"/static/icon.png\" type=\"image/png\"><script src=\"/static/htmx.min.js\"></script></head><body id=\"body\"><header><nav><a href=\"/\" title=\"Napp Home\"><img src=\"/static/icon.png\" style=\"height:1em; width: auto;\"> Fanks</a><ul>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><meta name=\"description\" content=\"A command line tool that helps you build and test web app ideas blazingly-fast with a streamlined Go, HTMX, and SQLite stack. Authored by Damien Sedgwick.\"><link href=\"/static/css/style.min.css\" rel=\"stylesheet\"><link rel=\"icon\" href=\"/static/icon.png\" type=\"image/png\"><script src=\"/static/htmx.min.js\"></script></head><body id=\"body\" class=\"bg-neutral-900 text-neutral-100\"><header class=\"bg-neutral-800\"><nav class=\"container flex items-center justify-between p-4 mx-auto\"><a href=\"/\" title=\"Napp Home\" class=\"flex items-center space-x-2\"><img src=\"/static/icon.png\" class=\"h-10 w-10\" alt=\"Icon\"> <span class=\"text-4xl font-bold\">Fanks</span></a><ul class=\"flex items-center space-x-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if user.ID != 0 {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><button hx-post=\"/auth/sign-out\" hx-target=\"body\">Sign Out</button></li>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><button hx-post=\"/auth/sign-out\" hx-target=\"body\" class=\"px-4 py-2 text-white rounded-md bg-gray-600 hover:bg-gray-700\">Sign Out</button></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
 		if user.ID == 0 {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><button hx-get=\"/auth/sign-in\" hx-target=\"body\">Sign In</button></li>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><button hx-get=\"/auth/sign-in\" hx-target=\"body\" class=\"px-4 py-2 text-white rounded-md bg-primary-600 hover:bg-primary-700\">Sign In</button></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</ul></nav></header><main>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</ul></nav></header><main class=\"container p-4 mx-auto\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
