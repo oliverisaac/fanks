@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/a-h/templ"
 	"github.com/gorilla/sessions"
@@ -51,6 +53,15 @@ func run() error {
 	err := godotenv.Load(".env")
 	if err != nil {
 		logrus.Error(errors.Wrap(err, "Failed to load .env"))
+	}
+
+	tz := os.Getenv("TZ")
+	if tz != "" {
+		loc, err := time.LoadLocation(tz)
+		if err != nil {
+			return errors.Wrap(err, "failed to load timezone")
+		}
+		time.Local = loc
 	}
 
 	cfg, err := types.ConfigFromEnv()
