@@ -100,7 +100,7 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 
 			// Register Service Worker
 			if ('serviceWorker' in navigator) {
-				navigator.serviceWorker.register(serviceworkerPath)
+				navigator.serviceWorker.register(serviceworkerPath, { scope: '/' })
 					.then(function (reg) {
 						console.log('Service Worker registered successfully.');
 						if (document.getElementById('push-subscribe-button')) {
