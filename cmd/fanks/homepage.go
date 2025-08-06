@@ -31,7 +31,12 @@ func homePageHandler(cfg types.Config, db *gorm.DB) echo.HandlerFunc {
 			logrus.Infof("Generating anonymous homepage")
 		}
 
-		pageData = pageData.WithPrompt(randomPrompt())
+		prompt := c.QueryParam("prompt")
+		if prompt == "" {
+			prompt = randomPrompt()
+		}
+
+		pageData = pageData.WithPrompt(prompt)
 
 		return render(c, 200, views.Index(pageData))
 	}

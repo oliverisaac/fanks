@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"time"
 
 	webpush "github.com/SherClockHolmes/webpush-go"
@@ -85,8 +86,18 @@ func sendPushNotificationToUser(cfg types.Config, user types.User) error {
 			},
 		}
 
+		prompt := randomPrompt()
+		pushPayload, err := json.Marshal(map[string]string{
+			"title": "Fanks",
+			"body":  prompt,
+			"url":   fmt.Sprintf("/?prompt=%s", url.QueryEscape(prompt)),
+		})
+		if err != nil {
+			return errors.Wrap(err, "marshalling push payload")
+		}
+
 		logrus.Debug("sending push notification")
-		resp, err := webpush.SendNotification([]byte("{\"title\":\"Fanks\",\"body\":\"What are you thankful for today?\"}"), sub, &webpush.Options{
+		resp, err := webpush.SendNotification(pushPayload, sub, &webpush.Options{
 			VAPIDPublicKey:  cfg.VapidPublicKey,
 			VAPIDPrivateKey: cfg.VapidPrivateKey,
 			TTL:             30,

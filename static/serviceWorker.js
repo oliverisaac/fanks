@@ -3,6 +3,7 @@ self.addEventListener('push', function(event) {
     event.waitUntil(
         self.registration.showNotification(data.title, {
             body: data.body,
+            data: { url: data.url }
         })
     );
 });
@@ -21,7 +22,7 @@ self.addEventListener('notificationclick', function(event) {
         }
         return client.focus();
       }
-      return clients.openWindow('https://fanks.isaacinit.com/');
+      return clients.openWindow(event.notification.data.url);
     })
   );
 });
