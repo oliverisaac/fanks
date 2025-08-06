@@ -87,12 +87,12 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 	</script>
 
 	<script>
-		function setupNotifications(vapidPublicKey) {
+		function setupNotifications(vapidPublicKey, serviceworkerPath) {
 			let wakeLock = null;
 
 			// Register Service Worker
 			if ('serviceWorker' in navigator) {
-				navigator.serviceWorker.register('/static/serviceWorker.js')
+				navigator.serviceWorker.register(serviceworkerPath)
 					.then(function (reg) {
 						console.log('Service Worker registered successfully.');
 						if (document.getElementById('push-subscribe-button')) {
@@ -146,7 +146,7 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 			return outputArray;
 		}
 	</script>
-	@templ.JSFuncCall("setupNotifications", cfg.VapidPublicKey)
+	@templ.JSFuncCall("setupNotifications", cfg.VapidPublicKey, versionedPath("/static/serviceWorker.js"))
 </body>
 
 </html>
