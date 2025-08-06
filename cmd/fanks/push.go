@@ -31,7 +31,7 @@ func startNotificationWorker(cfg types.Config, db *gorm.DB) error {
 			if now.In(loc).Hour() == 21 && now.In(loc).Minute() == 00 {
 				triggerPushChan <- 0
 			}
-			if now.In(loc).Hour() == 22 && now.In(loc).Minute() == 20 {
+			if now.In(loc).Hour() == 22 && now.In(loc).Minute() == 41 {
 				triggerPushChan <- 0
 			}
 		}
