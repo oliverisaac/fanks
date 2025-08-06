@@ -65,11 +65,10 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 	</main>
 	<footer>
 		if user != nil {
-		if len(user.PushSubscriptions) == 0 {
 		<button id="push-subscribe-button" class="px-4 py-2 text-white rounded-md bg-blue-600 hover:bg-blue-700">
 			@notificationBellSVG("h-3 w-3") Notify Me
 		</button>
-		} else {
+		if len(user.PushSubscriptions) > 0 {
 		<button hx-confirm="Unsubscribe all devices from push notifications?" hx-post="/push/unsubscribe"
 			hx-swap="delete" id="push-unsubscribe-button"
 			class="px-4 py-2 text-white rounded-md bg-red-800 hover:bg-red-800">
@@ -125,6 +124,7 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 												});
 											}).then(function (resp) {
 												alert("Subscribed!")
+												document.getElementById('push-subscribe-button').remove()
 											}).catch(function (err) {
 												console.error('Failed to subscribe to push notifications:', err);
 											});
