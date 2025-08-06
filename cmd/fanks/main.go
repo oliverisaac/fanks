@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -136,8 +135,7 @@ func run() error {
 	// Pages
 	e.GET("/", homePageHandler(cfg, db))
 	e.GET("/healthz", func(c echo.Context) error {
-		fmt.Println(c.Response().Writer, "ok")
-		return nil
+		return c.String(http.StatusOK, "ok")
 	})
 
 	// Blocks
