@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -100,6 +101,9 @@ func run() error {
 
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
+		Skipper: func(c echo.Context) bool {
+			return c.Request().URL.Path == "/healthz"
+		},
 	}))
 
 	db, err := gorm.Open(sqlite.Open(cfg.DBPath), &gorm.Config{})
@@ -131,6 +135,10 @@ func run() error {
 
 	// Pages
 	e.GET("/", homePageHandler(cfg, db))
+	e.GET("/healthz", func(c echo.Context) error {
+		fmt.Println(c.Response().Writer, "ok")
+		return nil
+	})
 
 	// Blocks
 	e.GET("/auth/sign-in", signIn(cfg))

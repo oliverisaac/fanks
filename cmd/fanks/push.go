@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	errs "errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -49,7 +50,7 @@ func startNotificationWorker(cfg types.Config, db *gorm.DB) error {
 				if triggerUID > 0 && triggerUID != user.ID {
 					continue
 				}
-				err := sendPushNotificationToUser(cfg, user)
+				err := sendPushNotificationToUser(cfg, db, user)
 				if err != nil {
 					logrus.Error(errors.Wrap(err, "sending push notification"))
 				}
@@ -80,7 +81,7 @@ func triggerPushes() echo.HandlerFunc {
 	}
 }
 
-func sendPushNotificationToUser(cfg types.Config, user types.User) error {
+func sendPushNotificationToUser(cfg types.Config, db *gorm.DB, user types.User) error {
 	logrus := logrus.WithField("user", user.Name)
 	for _, subData := range user.PushSubscriptions {
 		logrus := logrus.WithField("subdata", subData.ID)
@@ -109,16 +110,23 @@ func sendPushNotificationToUser(cfg types.Config, user types.User) error {
 			TTL:             30,
 		})
 		if err != nil {
-			logrus.Error(errors.Wrap(err, "sending push notification"))
-			continue
+			return errors.Wrap(err, "sending push notification")
 		}
 		defer resp.Body.Close()
+		if resp.StatusCode != 201 {
+			var deleteErr error
+			if resp.StatusCode == 410 {
+				logrus.Info("Subscriber no longer active")
+				deleteErr = db.Delete(subData).Error
+			}
+			return errs.Join(fmt.Errorf("Got status code %d", resp.StatusCode), deleteErr)
+		}
 		respBody, err := io.ReadAll(resp.Body)
 		if err != nil {
 			return errors.Wrap(err, "Reading response body from push notifications")
 		}
 
-		logrus.Debugf("Got resp body: %s", string(respBody))
+		logrus.Debugf("Got resp body (%d): %s", resp.StatusCode, string(respBody))
 
 		logrus.Info("Sent push notification to user")
 	}
