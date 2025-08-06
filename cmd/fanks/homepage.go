@@ -28,7 +28,7 @@ func homePageHandler(cfg types.Config, db *gorm.DB) echo.HandlerFunc {
 				WithUser(user).
 				WithNotes(notes)
 		} else {
-			logrus.Infof("Generating anonymous homepage")
+			logrus.Debug("Generating anonymous homepage")
 		}
 
 		prompt := c.QueryParam("prompt")
