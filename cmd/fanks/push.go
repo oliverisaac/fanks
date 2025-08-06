@@ -23,14 +23,14 @@ func startNotificationWorker(cfg types.Config, db *gorm.DB) error {
 	if err != nil {
 		return (errors.Wrap(err, "loading location"))
 	}
-	ticker := time.NewTicker(1 * time.Minute)
+	ticker := time.NewTicker(15 * time.Second)
 	go func() {
 		for range ticker.C {
 			now := time.Now()
 			if now.In(loc).Hour() == 21 && now.In(loc).Minute() == 00 {
 				triggerPushChan <- 0
 			}
-			if now.In(loc).Hour() == 22 && now.In(loc).Minute() == 15 {
+			if now.In(loc).Hour() == 22 && now.In(loc).Minute() == 17 {
 				triggerPushChan <- 0
 			}
 		}
