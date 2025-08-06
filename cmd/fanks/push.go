@@ -16,7 +16,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var triggerPushChan = make(chan struct{})
+var triggerPushChan = make(chan uint)
 
 func startNotificationWorker(cfg types.Config, db *gorm.DB) error {
 	loc, err := time.LoadLocation("America/Chicago")
@@ -28,13 +28,13 @@ func startNotificationWorker(cfg types.Config, db *gorm.DB) error {
 		for range ticker.C {
 			now := time.Now()
 			if now.In(loc).Hour() == 21 && now.In(loc).Minute() == 00 {
-				triggerPushChan <- struct{}{}
+				triggerPushChan <- 0
 			}
 		}
 	}()
 
 	go func() {
-		for range triggerPushChan {
+		for triggerUID := range triggerPushChan {
 			logrus.Info("Trigging push notifications for all users")
 			users, err := getAllUsersWithSubscriptions(db)
 			if err != nil {
@@ -43,6 +43,9 @@ func startNotificationWorker(cfg types.Config, db *gorm.DB) error {
 			}
 
 			for _, user := range users {
+				if triggerUID > 0 && triggerUID != user.ID {
+					continue
+				}
 				err := sendPushNotificationToUser(cfg, user)
 				if err != nil {
 					logrus.Error(errors.Wrap(err, "sending push notification"))
@@ -68,7 +71,7 @@ func triggerPushes() echo.HandlerFunc {
 		if user.Role != "admin" {
 			return c.String(http.StatusUnauthorized, "unauthorized, must be admin")
 		}
-		triggerPushChan <- struct{}{}
+		triggerPushChan <- user.ID
 		fmt.Fprintln(c.Response().Writer, "Triggered pushes")
 		return nil
 	}
