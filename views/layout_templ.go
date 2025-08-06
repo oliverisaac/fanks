@@ -77,15 +77,7 @@ func Layout(cfg types.Config, user *types.User, title string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if user != nil {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><button id=\"push-subscribe-button\" class=\"px-4 py-2 text-white rounded-md bg-green-600 hover:bg-green-700\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = notificationBellSVG("h-6, w-6").Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></li><li><button hx-post=\"/auth/sign-out\" hx-target=\"body\" class=\"px-4 py-2 text-white rounded-md bg-gray-600 hover:bg-gray-700\">Sign Out</button></li>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><button hx-post=\"/auth/sign-out\" hx-target=\"body\" class=\"px-4 py-2 text-white rounded-md bg-gray-600 hover:bg-gray-700\">Sign Out</button></li>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -103,7 +95,25 @@ func Layout(cfg types.Config, user *types.User, title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</main><script type=\"text/javascript\">\n\t\tdocument.addEventListener(\"DOMContentLoaded\", (event) => {\n\t\t\tdocument.body.addEventListener('htmx:beforeSwap', function (evt) {\n\t\t\t\tif (evt.detail.xhr.status === 422 || evt.detail.xhr.status === 500) {\n\t\t\t\t\tconsole.log(\"setting status to paint\");\n\t\t\t\t\t// allow 422 responses to swap as we are using this as a signal that\n\t\t\t\t\t// a form was submitted with bad data and want to rerender with the\n\t\t\t\t\t// errors\n\t\t\t\t\t//\n\t\t\t\t\t// set isError to false to avoid error logging in console\n\t\t\t\t\tevt.detail.shouldSwap = true;\n\t\t\t\t\tevt.detail.isError = false;\n\t\t\t\t}\n\t\t\t});\n\t\t});\n\t</script><script>\n\t\tfunction setupNotifications(vapidPublicKey, serviceworkerPath) {\n\t\t\tlet wakeLock = null;\n\n\t\t\t// Register Service Worker\n\t\t\tif ('serviceWorker' in navigator) {\n\t\t\t\tnavigator.serviceWorker.register(serviceworkerPath)\n\t\t\t\t\t.then(function (reg) {\n\t\t\t\t\t\tconsole.log('Service Worker registered successfully.');\n\t\t\t\t\t\tif (document.getElementById('push-subscribe-button')) {\n\t\t\t\t\t\t\tdocument.getElementById('push-subscribe-button').addEventListener('click', function () {\n\t\t\t\t\t\t\t\tconsole.log(\"subscribe button pusshed\")\n\t\t\t\t\t\t\t\tif ('serviceWorker' in navigator && 'PushManager' in window) {\n\t\t\t\t\t\t\t\t\tNotification.requestPermission().then(function (permission) {\n\t\t\t\t\t\t\t\t\t\tif (permission === 'granted') {\n\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"going to subscribe\")\n\t\t\t\t\t\t\t\t\t\t\treg.pushManager.subscribe({\n\t\t\t\t\t\t\t\t\t\t\t\tuserVisibleOnly: true,\n\t\t\t\t\t\t\t\t\t\t\t\tapplicationServerKey: urlBase64ToUint8Array(vapidPublicKey)\n\t\t\t\t\t\t\t\t\t\t\t}).then(function (subscription) {\n\t\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"Posting to /push/subscribe\")\n\t\t\t\t\t\t\t\t\t\t\t\tfetch('/push/subscribe', {\n\t\t\t\t\t\t\t\t\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\t\t\t\t\t\t\t\t\theaders: {\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t'Content-Type': 'application/json'\n\t\t\t\t\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\t\t\t\tbody: JSON.stringify(subscription)\n\t\t\t\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t\t\t\t}).catch(function (err) {\n\t\t\t\t\t\t\t\t\t\t\t\tconsole.error('Failed to subscribe to push notifications:', err);\n\t\t\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"Permission not granted for notifications\");\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\tconsole.log(\"Missing deps\")\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t});\n\t\t\t\t\t\t}\n\t\t\t\t\t})\n\t\t\t\t\t.catch(err => console.error('Service Worker registration failed:', err));\n\t\t\t}\n\t\t}\n\n\t\tfunction urlBase64ToUint8Array(base64String) {\n\t\t\tconst padding = '='.repeat((4 - base64String.length % 4) % 4);\n\t\t\tconst base64 = (base64String + padding)\n\t\t\t\t.replace(/\\-/g, '+')\n\t\t\t\t.replace(/_/g, '/');\n\n\t\t\tconst rawData = window.atob(base64);\n\t\t\tconst outputArray = new Uint8Array(rawData.length);\n\n\t\t\tfor (let i = 0; i < rawData.length; ++i) {\n\t\t\t\toutputArray[i] = rawData.charCodeAt(i);\n\t\t\t}\n\t\t\treturn outputArray;\n\t\t}\n\t</script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</main><footer>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if user != nil {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<li><button id=\"push-subscribe-button\" class=\"px-4 py-2 text-white rounded-md bg-blue-600 hover:bg-blue-700\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = notificationBellSVG("h-3 w-3").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("Notify Me</button></li>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</footer><script type=\"text/javascript\">\n\t\tdocument.addEventListener(\"DOMContentLoaded\", (event) => {\n\t\t\tdocument.body.addEventListener('htmx:beforeSwap', function (evt) {\n\t\t\t\tif (evt.detail.xhr.status === 422 || evt.detail.xhr.status === 500) {\n\t\t\t\t\tconsole.log(\"setting status to paint\");\n\t\t\t\t\t// allow 422 responses to swap as we are using this as a signal that\n\t\t\t\t\t// a form was submitted with bad data and want to rerender with the\n\t\t\t\t\t// errors\n\t\t\t\t\t//\n\t\t\t\t\t// set isError to false to avoid error logging in console\n\t\t\t\t\tevt.detail.shouldSwap = true;\n\t\t\t\t\tevt.detail.isError = false;\n\t\t\t\t}\n\t\t\t});\n\t\t});\n\t</script><script>\n\t\tfunction setupNotifications(vapidPublicKey, serviceworkerPath) {\n\t\t\tlet wakeLock = null;\n\n\t\t\t// Register Service Worker\n\t\t\tif ('serviceWorker' in navigator) {\n\t\t\t\tnavigator.serviceWorker.register(serviceworkerPath)\n\t\t\t\t\t.then(function (reg) {\n\t\t\t\t\t\tconsole.log('Service Worker registered successfully.');\n\t\t\t\t\t\tif (document.getElementById('push-subscribe-button')) {\n\t\t\t\t\t\t\tdocument.getElementById('push-subscribe-button').addEventListener('click', function () {\n\t\t\t\t\t\t\t\tconsole.log(\"subscribe button pusshed\")\n\t\t\t\t\t\t\t\tif ('serviceWorker' in navigator && 'PushManager' in window) {\n\t\t\t\t\t\t\t\t\tNotification.requestPermission().then(function (permission) {\n\t\t\t\t\t\t\t\t\t\tif (permission === 'granted') {\n\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"going to subscribe\")\n\t\t\t\t\t\t\t\t\t\t\treg.pushManager.subscribe({\n\t\t\t\t\t\t\t\t\t\t\t\tuserVisibleOnly: true,\n\t\t\t\t\t\t\t\t\t\t\t\tapplicationServerKey: urlBase64ToUint8Array(vapidPublicKey)\n\t\t\t\t\t\t\t\t\t\t\t}).then(function (subscription) {\n\t\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"Posting to /push/subscribe\")\n\t\t\t\t\t\t\t\t\t\t\t\tfetch('/push/subscribe', {\n\t\t\t\t\t\t\t\t\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\t\t\t\t\t\t\t\t\theaders: {\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t'Content-Type': 'application/json'\n\t\t\t\t\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\t\t\t\tbody: JSON.stringify(subscription)\n\t\t\t\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t\t\t\t}).then(function (resp) {\n\t\t\t\t\t\t\t\t\t\t\t\talert(\"Subscribed!\")\n\t\t\t\t\t\t\t\t\t\t\t}).catch(function (err) {\n\t\t\t\t\t\t\t\t\t\t\t\tconsole.error('Failed to subscribe to push notifications:', err);\n\t\t\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"Permission not granted for notifications\");\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\tconsole.log(\"Missing deps\")\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t});\n\t\t\t\t\t\t}\n\t\t\t\t\t})\n\t\t\t\t\t.catch(err => console.error('Service Worker registration failed:', err));\n\t\t\t}\n\t\t}\n\n\t\tfunction urlBase64ToUint8Array(base64String) {\n\t\t\tconst padding = '='.repeat((4 - base64String.length % 4) % 4);\n\t\t\tconst base64 = (base64String + padding)\n\t\t\t\t.replace(/\\-/g, '+')\n\t\t\t\t.replace(/_/g, '/');\n\n\t\t\tconst rawData = window.atob(base64);\n\t\t\tconst outputArray = new Uint8Array(rawData.length);\n\n\t\t\tfor (let i = 0; i < rawData.length; ++i) {\n\t\t\t\toutputArray[i] = rawData.charCodeAt(i);\n\t\t\t}\n\t\t\treturn outputArray;\n\t\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

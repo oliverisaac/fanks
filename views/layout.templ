@@ -48,12 +48,6 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 			<ul class="flex items-center space-x-4">
 				if user != nil {
 				<li>
-					<button id="push-subscribe-button"
-						class="px-4 py-2 text-white rounded-md bg-green-600 hover:bg-green-700">
-						@notificationBellSVG("h-6, w-6")
-					</button>
-				</li>
-				<li>
 					<button hx-post="/auth/sign-out" hx-target="body"
 						class="px-4 py-2 text-white rounded-md bg-gray-600 hover:bg-gray-700">Sign Out</button>
 				</li>
@@ -69,6 +63,15 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 	<main class="container p-4 mx-auto">
 		{ children... }
 	</main>
+	<footer>
+		if user != nil {
+		<li>
+			<button id="push-subscribe-button" class="px-4 py-2 text-white rounded-md bg-blue-600 hover:bg-blue-700">
+				@notificationBellSVG("h-3 w-3") Notify Me
+			</button>
+		</li>
+		}
+	</footer>
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", (event) => {
 			document.body.addEventListener('htmx:beforeSwap', function (evt) {
@@ -114,6 +117,8 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 													},
 													body: JSON.stringify(subscription)
 												});
+											}).then(function (resp) {
+												alert("Subscribed!")
 											}).catch(function (err) {
 												console.error('Failed to subscribe to push notifications:', err);
 											});
