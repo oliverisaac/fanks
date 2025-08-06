@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/a-h/templ"
@@ -86,7 +87,10 @@ func run() error {
 		DisablePrintStack: false,
 		LogLevel:          log.ERROR,
 		LogErrorFunc: func(c echo.Context, err error, stack []byte) error {
-			logrus.Error(errors.Wrap(err, "recovered panic"))
+			logrus.Error(errors.Wrap(err, "recovered panic:"))
+			for _, l := range strings.Split(string(stack), "\n") {
+				logrus.Errorf("stack: %s", strings.ReplaceAll(l, "\t", "  "))
+			}
 			return nil
 		},
 		DisableErrorHandler: false,

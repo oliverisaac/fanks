@@ -5,7 +5,7 @@ import "github.com/oliverisaac/fanks/types"
 templ Index(pageData types.HomePageData) {
 @Layout(pageData.Config, pageData.User, "Fanks") {
 <section class="container mx-auto">
-	if pageData.User.ID > 0 {
+	if pageData.User != nil && pageData.User.ID > 0 {
 	@CreateNoteForm(types.Note{}, "random", pageData.Prompt, nil)
 	}
 	<div id="notes" class="mt-4 space-y-4">
