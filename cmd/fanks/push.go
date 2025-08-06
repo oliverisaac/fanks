@@ -108,6 +108,20 @@ func sendPushNotificationToUser(cfg types.Config, user types.User) error {
 	return nil
 }
 
+func removeSubscription(db *gorm.DB) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user, ok := GetSessionUser(c)
+		if !ok {
+			return c.String(http.StatusUnauthorized, "unauthorized")
+		}
+
+		if err := db.Delete(user.PushSubscriptions).Error; err != nil {
+			return errors.Wrap(err, "removing subscription")
+		}
+
+		return c.String(http.StatusOK, "subscription removed")
+	}
+}
 func saveSubscription(db *gorm.DB) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user, ok := GetSessionUser(c)

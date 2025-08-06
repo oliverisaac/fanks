@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -29,7 +27,9 @@ func init() {
 	goli.InitLogrus(logrus.DebugLevel)
 }
 
+const SessionKey = "session"
 const UserKey = "session-user"
+const SessionUserIDKey = "userid"
 
 func render(ctx echo.Context, status int, t templ.Component) error {
 	ctx.Response().Writer.WriteHeader(status)
@@ -98,10 +98,6 @@ func run() error {
 		Format: "method=${method}, uri=${uri}, status=${status}\n",
 	}))
 
-	store := sessions.NewCookieStore(cfg.CookeSecret)
-	e.Use(session.Middleware(store))
-	e.Use(UserMiddleware())
-
 	db, err := gorm.Open(sqlite.Open(cfg.DBPath), &gorm.Config{})
 	if err != nil {
 		return errors.Wrap(err, "failed to connect database")
@@ -116,6 +112,10 @@ func run() error {
 	if err != nil {
 		return errors.Wrap(err, "Failed to setup notifciation worker")
 	}
+
+	store := sessions.NewCookieStore(cfg.CookeSecret)
+	e.Use(session.Middleware(store))
+	e.Use(UserMiddleware(db))
 
 	// Pages
 	e.GET("/", homePageHandler(cfg, db))
@@ -136,21 +136,21 @@ func run() error {
 
 	// push
 	e.POST("/push/subscribe", saveSubscription(db))
+	e.POST("/push/unsubscribe", removeSubscription(db))
 	e.POST("/push/trigger", triggerPushes())
 
 	return e.Start(":8080")
 }
 
-func UserMiddleware() echo.MiddlewareFunc {
+func UserMiddleware(db *gorm.DB) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			sess, _ := session.Get("session", c)
-			if sess.Values["user"] != nil {
-				var user types.User
-				err := json.Unmarshal(sess.Values["user"].([]byte), &user)
+			sess, _ := session.Get(SessionKey, c)
+			if sess.Values[SessionUserIDKey] != nil {
+				userID := sess.Values[SessionUserIDKey].(uint)
+				user, err := getUserByID(db, userID)
 				if err != nil {
-					fmt.Println("error unmarshalling user value")
-					return err
+					return errors.Wrap(err, "getting user by id")
 				}
 				c.Set(UserKey, user)
 			}

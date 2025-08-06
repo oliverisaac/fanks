@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -18,6 +17,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
+
+func getUserByID(db *gorm.DB, id uint) (types.User, error) {
+	var user types.User
+	err := db.Preload("PushSubscriptions").First(&user, "id = ?", id).Error
+
+	return user, errors.Wrap(err, "Finding user")
+}
 
 func userExists(email string, db *gorm.DB) bool {
 	var user types.User
@@ -108,19 +114,14 @@ func signInWithEmailAndPassword(db *gorm.DB, cfg types.Config) echo.HandlerFunc 
 			return render(c, 422, views.SignInForm(cfg, fmt.Errorf("Invalid email or password")))
 		}
 
-		sess, _ := session.Get("session", c)
+		sess, _ := session.Get(SessionKey, c)
 		sess.Options = &sessions.Options{
 			Path:     "/",
 			MaxAge:   3600 * 24 * 365,
 			HttpOnly: true,
 		}
 
-		userBytes, err := json.Marshal(user)
-		if err != nil {
-			return render(c, 422, views.SignInForm(cfg, errors.Wrap(err, "Internal server error")))
-		}
-
-		sess.Values["user"] = userBytes
+		sess.Values[SessionUserIDKey] = user.ID
 
 		err = sess.Save(c.Request(), c.Response())
 		if err != nil {
