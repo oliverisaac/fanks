@@ -112,7 +112,10 @@ func run() error {
 		return errors.Wrap(err, "Failed to migrate")
 	}
 
-	sendPushNotifications(cfg, db)
+	err = startNotificationWorker(cfg, db)
+	if err != nil {
+		return errors.Wrap(err, "Failed to setup notifciation worker")
+	}
 
 	// Pages
 	e.GET("/", homePageHandler(cfg, db))
@@ -133,6 +136,7 @@ func run() error {
 
 	// push
 	e.POST("/push/subscribe", saveSubscription(db))
+	e.POST("/push/trigger", triggerPushes())
 
 	return e.Start(":8080")
 }

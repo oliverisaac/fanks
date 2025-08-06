@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
@@ -14,29 +15,41 @@ import (
 	"gorm.io/gorm"
 )
 
-func sendPushNotifications(cfg types.Config, db *gorm.DB) {
+var triggerPushChan = make(chan struct{})
+
+func startNotificationWorker(cfg types.Config, db *gorm.DB) error {
+	loc, err := time.LoadLocation("America/Chicago")
+	if err != nil {
+		return (errors.Wrap(err, "loading location"))
+	}
 	ticker := time.NewTicker(1 * time.Minute)
 	go func() {
 		for range ticker.C {
 			now := time.Now()
-			loc, err := time.LoadLocation("America/Chicago")
+			if now.In(loc).Hour() == 21 && now.In(loc).Minute() == 00 {
+				triggerPushChan <- struct{}{}
+			}
+		}
+	}()
+
+	go func() {
+		for range triggerPushChan {
+			logrus.Info("Trigging push notifications for all users")
+			users, err := getAllUsersWithSubscriptions(db)
 			if err != nil {
-				logrus.Error(errors.Wrap(err, "loading location"))
+				logrus.Error(errors.Wrap(err, "getting all users"))
 				continue
 			}
-			if now.In(loc).Hour() == 21 && now.In(loc).Minute() == 00 {
-				users, err := getAllUsersWithSubscriptions(db)
-				if err != nil {
-					logrus.Error(errors.Wrap(err, "getting all users"))
-					continue
-				}
 
-				for _, user := range users {
-					sendPushNotificationToUser(cfg, user)
+			for _, user := range users {
+				err := sendPushNotificationToUser(cfg, user)
+				if err != nil {
+					logrus.Error(errors.Wrap(err, "sending push notification"))
 				}
 			}
 		}
 	}()
+	return nil
 }
 
 func getAllUsersWithSubscriptions(db *gorm.DB) ([]types.User, error) {
@@ -45,8 +58,25 @@ func getAllUsersWithSubscriptions(db *gorm.DB) ([]types.User, error) {
 	return users, err
 }
 
-func sendPushNotificationToUser(cfg types.Config, user types.User) {
+func triggerPushes() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user, ok := GetSessionUser(c)
+		if !ok {
+			return c.String(http.StatusUnauthorized, "unauthorized")
+		}
+		if user.Role != "admin" {
+			return c.String(http.StatusUnauthorized, "unauthorized, must be admin")
+		}
+		triggerPushChan <- struct{}{}
+		fmt.Fprintln(c.Response().Writer, "Triggered pushes")
+		return nil
+	}
+}
+
+func sendPushNotificationToUser(cfg types.Config, user types.User) error {
+	logrus := logrus.WithField("user", user.Name)
 	for _, subData := range user.PushSubscriptions {
+		logrus := logrus.WithField("subdata", subData.ID)
 		sub := &webpush.Subscription{
 			Endpoint: subData.Endpoint,
 			Keys: webpush.Keys{
@@ -55,6 +85,7 @@ func sendPushNotificationToUser(cfg types.Config, user types.User) {
 			},
 		}
 
+		logrus.Debug("sending push notification")
 		resp, err := webpush.SendNotification([]byte("{\"title\":\"Fanks\",\"body\":\"What are you thankful for today?\"}"), sub, &webpush.Options{
 			VAPIDPublicKey:  cfg.VapidPublicKey,
 			VAPIDPrivateKey: cfg.VapidPrivateKey,
@@ -65,9 +96,16 @@ func sendPushNotificationToUser(cfg types.Config, user types.User) {
 			continue
 		}
 		defer resp.Body.Close()
+		respBody, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return errors.Wrap(err, "Reading response body from push notifications")
+		}
 
-		fmt.Printf("Sent push notification to user %s\n", user.Email)
+		logrus.Debugf("Got resp body: %s", string(respBody))
+
+		logrus.Info("Sent push notification to user")
 	}
+	return nil
 }
 
 func saveSubscription(db *gorm.DB) echo.HandlerFunc {
