@@ -99,7 +99,7 @@ func sendPushNotificationToUser(cfg types.Config, user types.User) error {
 			return errors.Wrap(err, "marshalling push payload")
 		}
 
-		logrus.Debug("sending push notification")
+		logrus.Debugf("sending push notification: %s", string(pushPayload))
 		resp, err := webpush.SendNotification(pushPayload, sub, &webpush.Options{
 			VAPIDPublicKey:  cfg.VapidPublicKey,
 			VAPIDPrivateKey: cfg.VapidPrivateKey,

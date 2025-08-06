@@ -20,6 +20,7 @@ self.addEventListener('notificationclick', function(event) {
             client = clientList[i];
           }
         }
+        client.navigate(event.notification.data.url);
         return client.focus();
       }
       return clients.openWindow(event.notification.data.url);

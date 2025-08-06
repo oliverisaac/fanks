@@ -75,6 +75,12 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 			Do Not Notify Me
 		</button>
 		}
+		if user.Role == "admin" {
+		<button hx-post="/push/trigger" id="push-trigger-button"
+			class="px-4 py-2 text-white rounded-md bg-yellow-600 hover:bg-yellow-800">
+			Trigger Notification
+		</button>
+		}
 		}
 	</footer>
 	<script type="text/javascript">
