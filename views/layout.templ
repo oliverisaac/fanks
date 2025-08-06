@@ -157,7 +157,7 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 			return outputArray;
 		}
 	</script>
-	@templ.JSFuncCall("setupNotifications", cfg.VapidPublicKey, versionedPath("/static/serviceWorker.js"))
+	@templ.JSFuncCall("setupNotifications", cfg.VapidPublicKey, versionedPath("/serviceWorker.js"))
 </body>
 
 </html>

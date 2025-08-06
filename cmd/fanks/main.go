@@ -117,6 +117,14 @@ func run() error {
 	e.Use(session.Middleware(store))
 	e.Use(UserMiddleware(db))
 
+	e.GET("/serviceWorker.js", func(c echo.Context) error {
+		sw, err := static.FS.ReadFile("serviceWorker.js")
+		if err != nil {
+			return errors.Wrap(err, "reading service worker from embed fs")
+		}
+		return c.Blob(http.StatusOK, "application/javascript", sw)
+	})
+
 	// Pages
 	e.GET("/", homePageHandler(cfg, db))
 

@@ -123,7 +123,7 @@ func Layout(cfg types.Config, user *types.User, title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.JSFuncCall("setupNotifications", cfg.VapidPublicKey, versionedPath("/static/serviceWorker.js")).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = templ.JSFuncCall("setupNotifications", cfg.VapidPublicKey, versionedPath("/serviceWorker.js")).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
