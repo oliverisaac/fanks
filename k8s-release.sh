@@ -33,8 +33,11 @@ echo "$resources" |
       for ((i = 0; i < 60; i++)); do
         echo_do kubectl rollout restart -n "$namespace" "$resource"
         if ! echo_do kubectl get -n $namespace pods -o yaml | grep -qFe "$image_hash"; then
-          echo "Unable to find $image_hash in manifest. Sleeping for 3 and trying again..."
-          sleep 3
+          echo "Unable to find $image_hash in manifest. Sleeping for 10 and trying again..."
+          for ((i = 10; i > 0; i--)); do
+            printf "\rSleeping for %d seconds...   " i
+            sleep 1
+          done
         else
           deployed=true
           echo "Deployment has updated image hash: ${image_hash}"
