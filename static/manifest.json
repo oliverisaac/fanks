@@ -2,7 +2,7 @@
     "name": "Fanks",
     "short_name": "Fanks",
     "start_url": "/",
-    "display": "fullscreen",
+    "display": "browser",
     "icons": [
     {
         "src": "/static/icon-64.png",
