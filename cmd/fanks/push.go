@@ -106,7 +106,7 @@ func sendPushNotificationToUser(cfg types.Config, db *gorm.DB, user types.User) 
 		resp, err := webpush.SendNotification(pushPayload, sub, &webpush.Options{
 			VAPIDPublicKey:  cfg.VapidPublicKey,
 			VAPIDPrivateKey: cfg.VapidPrivateKey,
-			TTL:             30,
+			TTL:             300,
 			Urgency:         webpush.UrgencyNormal,
 		})
 		if err != nil {

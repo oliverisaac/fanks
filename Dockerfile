@@ -41,11 +41,11 @@ COPY version ./version
 
 COPY --from=tailwind /workdir/static/css/style.min.css ./static/css/style.min.css
 
-ARG VERSION_TAG="dev"
+ARG VERSION="dev"
 
 # Build static Go binary
 RUN --mount=type=cache,target=/go-build-cache --mount=type=cache,target=/go-mod-cache \
-  go build -ldflags "-X github.com/oliverisaac/fanks/version.Tag=$VERSION_TAG" -o /fanks ./cmd/fanks/
+  go build -ldflags "-X github.com/oliverisaac/fanks/version.Tag=$VERSION" -o /fanks ./cmd/fanks/
 
 # Create a minimal passwd file for non-root user (UID 10001)
 RUN echo "nonroot:x:10001:10001:NonRoot User:/:/sbin/nologin" > /etc/passwd
