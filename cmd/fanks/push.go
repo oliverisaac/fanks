@@ -95,7 +95,7 @@ func sendPushNotificationToUser(cfg types.Config, db *gorm.DB, user types.User) 
 			"title": "Fanks",
 			"body":  prompt,
 			"icon":  "/static/icon.png",
-			"badge": "/static/icon.png",
+			"badge": "/static/badge-128.png",
 			"url":   fmt.Sprintf("/?prompt=%s", url.QueryEscape(prompt)),
 		})
 		if err != nil {
