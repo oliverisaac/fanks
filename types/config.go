@@ -15,6 +15,7 @@ import (
 )
 
 type Config struct {
+	Hostname          string
 	AllowSignup       bool
 	AllowSignupEmails []string
 	CookeSecret       []byte
@@ -70,6 +71,8 @@ func ConfigFromEnv() (Config, error) {
 	if !ok {
 		retErr = errs.Join(retErr, fmt.Errorf("You must define env VAPID_PUBLIC_KEY"))
 	}
+
+	ret.Hostname = goli.DefaultEnv("FANKS_HOSTNAME", "localhost")
 
 	return ret, retErr
 }
