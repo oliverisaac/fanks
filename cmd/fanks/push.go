@@ -106,6 +106,7 @@ func sendPushNotificationToUser(cfg types.Config, db *gorm.DB, user types.User) 
 
 		logrus.Debugf("sending push notification: %s", string(pushPayload))
 		resp, err := webpush.SendNotification(pushPayload, sub, &webpush.Options{
+			Topic:           "fanks-daily-reminder",
 			VAPIDPublicKey:  cfg.VapidPublicKey,
 			VAPIDPrivateKey: cfg.VapidPrivateKey,
 			TTL:             24 * 3600 * 7, // 7 days
