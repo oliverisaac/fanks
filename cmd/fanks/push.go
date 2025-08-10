@@ -94,7 +94,8 @@ func sendPushNotificationToUser(cfg types.Config, db *gorm.DB, user types.User) 
 		pushPayload, err := json.Marshal(map[string]string{
 			"title": "Fanks",
 			"body":  prompt,
-      "icon": "https://fanks.isaacinit.com/static/icon.png",
+			"icon":  "/static/icon.png",
+			"badge": "/static/icon.png",
 			"url":   fmt.Sprintf("/?prompt=%s", url.QueryEscape(prompt)),
 		})
 		if err != nil {
