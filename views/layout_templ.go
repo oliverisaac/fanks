@@ -59,7 +59,7 @@ func Layout(cfg types.Config, user *types.User, title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" rel=\"stylesheet\"><link rel=\"icon\" href=\"/static/icon.png\" type=\"image/png\"><script src=\"/static/htmx-2.0.6.min.js\"></script><link rel=\"manifest\" href=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" rel=\"stylesheet\"><link rel=\"icon\" href=\"/static/icon-128.png\" type=\"image/png\"><script src=\"/static/htmx-2.0.6.min.js\"></script><link rel=\"manifest\" href=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -72,7 +72,7 @@ func Layout(cfg types.Config, user *types.User, title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><meta name=\"mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"application-name\" content=\"Fanks\"><meta name=\"apple-mobile-web-app-title\" content=\"Fanks\"><!--\n    <meta name=\"theme-color\" content=\"#2c3e50\"/> \n    <meta name=\"msapplication-navbutton-color\" content=\"#2c3e50\"/>\n    --><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"><link rel=\"icon\" type=\"image/png\" href=\"/static/icon-512.png\"><link rel=\"apple-touch-icon\" href=\"/static/icon-512.png\"></head><body id=\"body\" class=\"bg-neutral-900 text-neutral-100\"><header class=\"bg-neutral-800\"><nav class=\"container flex items-center justify-between p-4 mx-auto\"><a href=\"/\" title=\"Napp Home\" class=\"flex items-center space-x-2\"><img src=\"/static/icon.png\" class=\"h-10 w-10\" alt=\"Icon\"> <span class=\"text-4xl font-bold\">Fanks</span></a><ul class=\"flex items-center space-x-4\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><meta name=\"mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"application-name\" content=\"Fanks\"><meta name=\"apple-mobile-web-app-title\" content=\"Fanks\"><!--\n    <meta name=\"theme-color\" content=\"#2c3e50\"/> \n    <meta name=\"msapplication-navbutton-color\" content=\"#2c3e50\"/>\n    --><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"><link rel=\"icon\" type=\"image/png\" href=\"/static/icon-512.png\"><link rel=\"apple-touch-icon\" href=\"/static/icon-512.png\"></head><body id=\"body\" class=\"bg-neutral-900 text-neutral-100 flex flex-col min-h-screen\"><header class=\"bg-neutral-800\"><nav class=\"container flex items-center justify-between p-4 mx-auto\"><a href=\"/\" title=\"Napp Home\" class=\"flex items-center space-x-2\"><img src=\"/static/icon-512.png\" class=\"h-10 w-10\" alt=\"Icon\"> <span class=\"text-4xl font-bold\">Fanks</span></a><ul class=\"flex items-center space-x-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -87,7 +87,7 @@ func Layout(cfg types.Config, user *types.User, title string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</ul></nav></header><main class=\"container p-4 mx-auto\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</ul></nav></header><main class=\"container p-4 mx-auto flex-grow\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -95,12 +95,12 @@ func Layout(cfg types.Config, user *types.User, title string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</main><footer>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</main><footer class=\"p-4\"><div class=\"flex justify-center items-center space-x-2\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if user != nil {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button id=\"push-subscribe-button\" class=\"px-4 py-2 text-white rounded-md bg-blue-600 hover:bg-blue-700\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button id=\"push-subscribe-button\" class=\"flex items-center px-4 py-2 text-white rounded-md bg-blue-600 hover:bg-blue-700\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -108,7 +108,7 @@ func Layout(cfg types.Config, user *types.User, title string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("Notify Me</button> ")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<span class=\"ml-2\">Notify Me</span></button> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -129,7 +129,20 @@ func Layout(cfg types.Config, user *types.User, title string) templ.Component {
 				}
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</footer><script type=\"text/javascript\">\n\t\tdocument.addEventListener(\"DOMContentLoaded\", (event) => {\n\t\t\tdocument.body.addEventListener('htmx:beforeSwap', function (evt) {\n\t\t\t\tif (evt.detail.xhr.status === 422 || evt.detail.xhr.status === 500) {\n\t\t\t\t\tconsole.log(\"setting status to paint\");\n\t\t\t\t\t// allow 422 responses to swap as we are using this as a signal that\n\t\t\t\t\t// a form was submitted with bad data and want to rerender with the\n\t\t\t\t\t// errors\n\t\t\t\t\t//\n\t\t\t\t\t// set isError to false to avoid error logging in console\n\t\t\t\t\tevt.detail.shouldSwap = true;\n\t\t\t\t\tevt.detail.isError = false;\n\t\t\t\t}\n\t\t\t});\n\t\t});\n\t</script><script>\n\t\tfunction setupNotifications(vapidPublicKey, serviceworkerPath) {\n\t\t\tlet wakeLock = null;\n\n\t\t\t// Register Service Worker\n\t\t\tif ('serviceWorker' in navigator) {\n\t\t\t\tnavigator.serviceWorker.register(serviceworkerPath, { scope: '/' })\n\t\t\t\t\t.then(function (reg) {\n\t\t\t\t\t\tconsole.log('Service Worker registered successfully.');\n\t\t\t\t\t\tif (document.getElementById('push-subscribe-button')) {\n\t\t\t\t\t\t\tdocument.getElementById('push-subscribe-button').addEventListener('click', function () {\n\t\t\t\t\t\t\t\tconsole.log(\"subscribe button pusshed\")\n\t\t\t\t\t\t\t\tif ('serviceWorker' in navigator && 'PushManager' in window) {\n\t\t\t\t\t\t\t\t\tNotification.requestPermission().then(function (permission) {\n\t\t\t\t\t\t\t\t\t\tif (permission === 'granted') {\n\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"going to subscribe\")\n\t\t\t\t\t\t\t\t\t\t\treg.pushManager.subscribe({\n\t\t\t\t\t\t\t\t\t\t\t\tuserVisibleOnly: true,\n\t\t\t\t\t\t\t\t\t\t\t\tapplicationServerKey: urlBase64ToUint8Array(vapidPublicKey)\n\t\t\t\t\t\t\t\t\t\t\t}).then(function (subscription) {\n\t\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"Posting to /push/subscribe\")\n\t\t\t\t\t\t\t\t\t\t\t\tfetch('/push/subscribe', {\n\t\t\t\t\t\t\t\t\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\t\t\t\t\t\t\t\t\theaders: {\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t'Content-Type': 'application/json'\n\t\t\t\t\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\t\t\t\tbody: JSON.stringify(subscription)\n\t\t\t\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t\t\t\t}).then(function (resp) {\n\t\t\t\t\t\t\t\t\t\t\t\talert(\"Subscribed!\")\n\t\t\t\t\t\t\t\t\t\t\t\tdocument.getElementById('push-subscribe-button').remove()\n\t\t\t\t\t\t\t\t\t\t\t}).catch(function (err) {\n\t\t\t\t\t\t\t\t\t\t\t\tconsole.error('Failed to subscribe to push notifications:', err);\n\t\t\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"Permission not granted for notifications\");\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\tconsole.log(\"Missing deps\")\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t});\n\t\t\t\t\t\t}\n\t\t\t\t\t})\n\t\t\t\t\t.catch(err => console.error('Service Worker registration failed:', err));\n\t\t\t}\n\t\t}\n\n\t\tfunction urlBase64ToUint8Array(base64String) {\n\t\t\tconst padding = '='.repeat((4 - base64String.length % 4) % 4);\n\t\t\tconst base64 = (base64String + padding)\n\t\t\t\t.replace(/\\-/g, '+')\n\t\t\t\t.replace(/_/g, '/');\n\n\t\t\tconst rawData = window.atob(base64);\n\t\t\tconst outputArray = new Uint8Array(rawData.length);\n\n\t\t\tfor (let i = 0; i < rawData.length; ++i) {\n\t\t\t\toutputArray[i] = rawData.charCodeAt(i);\n\t\t\t}\n\t\t\treturn outputArray;\n\t\t}\n\t</script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><p class=\"text-center text-neutral-500 text-xs mt-2\">Version: ")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var5 string
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(version.Tag)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/layout.templ`, Line: 88, Col: 76}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></footer><script type=\"text/javascript\">\n\t\tdocument.addEventListener(\"DOMContentLoaded\", (event) => {\n\t\t\tdocument.body.addEventListener('htmx:beforeSwap', function (evt) {\n\t\t\t\tif (evt.detail.xhr.status === 422 || evt.detail.xhr.status === 500) {\n\t\t\t\t\tconsole.log(\"setting status to paint\");\n\t\t\t\t\t// allow 422 responses to swap as we are using this as a signal that\n\t\t\t\t\t// a form was submitted with bad data and want to rerender with the\n\t\t\t\t\t// errors\n\t\t\t\t\t//\n\t\t\t\t\t// set isError to false to avoid error logging in console\n\t\t\t\t\tevt.detail.shouldSwap = true;\n\t\t\t\t\tevt.detail.isError = false;\n\t\t\t\t}\n\t\t\t});\n\t\t});\n\t</script><script>\n\t\tfunction setupNotifications(vapidPublicKey, serviceworkerPath) {\n\t\t\tlet wakeLock = null;\n\n\t\t\t// Register Service Worker\n\t\t\tif ('serviceWorker' in navigator) {\n\t\t\t\tnavigator.serviceWorker.register(serviceworkerPath, { scope: '/' })\n\t\t\t\t\t.then(function (reg) {\n\t\t\t\t\t\tconsole.log('Service Worker registered successfully.');\n\t\t\t\t\t\tif (document.getElementById('push-subscribe-button')) {\n\t\t\t\t\t\t\tdocument.getElementById('push-subscribe-button').addEventListener('click', function () {\n\t\t\t\t\t\t\t\tconsole.log(\"subscribe button pusshed\")\n\t\t\t\t\t\t\t\tif ('serviceWorker' in navigator && 'PushManager' in window) {\n\t\t\t\t\t\t\t\t\tNotification.requestPermission().then(function (permission) {\n\t\t\t\t\t\t\t\t\t\tif (permission === 'granted') {\n\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"going to subscribe\")\n\t\t\t\t\t\t\t\t\t\t\treg.pushManager.subscribe({\n\t\t\t\t\t\t\t\t\t\t\t\tuserVisibleOnly: true,\n\t\t\t\t\t\t\t\t\t\t\t\tapplicationServerKey: urlBase64ToUint8Array(vapidPublicKey)\n\t\t\t\t\t\t\t\t\t\t\t}).then(function (subscription) {\n\t\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"Posting to /push/subscribe\")\n\t\t\t\t\t\t\t\t\t\t\t\tfetch('/push/subscribe', {\n\t\t\t\t\t\t\t\t\t\t\t\t\tmethod: 'POST',\n\t\t\t\t\t\t\t\t\t\t\t\t\theaders: {\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t'Content-Type': 'application/json'\n\t\t\t\t\t\t\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\t\t\t\t\t\t\tbody: JSON.stringify(subscription)\n\t\t\t\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t\t\t\t}).then(function (resp) {\n\t\t\t\t\t\t\t\t\t\t\t\talert(\"Subscribed!\")\n\t\t\t\t\t\t\t\t\t\t\t\tdocument.getElementById('push-subscribe-button').remove()\n\t\t\t\t\t\t\t\t\t\t\t}).catch(function (err) {\n\t\t\t\t\t\t\t\t\t\t\t\tconsole.error('Failed to subscribe to push notifications:', err);\n\t\t\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\t\t\tconsole.log(\"Permission not granted for notifications\");\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t});\n\t\t\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\t\t\tconsole.log(\"Missing deps\")\n\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t});\n\t\t\t\t\t\t}\n\t\t\t\t\t})\n\t\t\t\t\t.catch(err => console.error('Service Worker registration failed:', err));\n\t\t\t}\n\t\t}\n\n\t\tfunction urlBase64ToUint8Array(base64String) {\n\t\t\tconst padding = '='.repeat((4 - base64String.length % 4) % 4);\n\t\t\tconst base64 = (base64String + padding)\n\t\t\t\t.replace(/\\-/g, '+')\n\t\t\t\t.replace(/_/g, '/');\n\n\t\t\tconst rawData = window.atob(base64);\n\t\t\tconst outputArray = new Uint8Array(rawData.length);\n\n\t\t\tfor (let i = 0; i < rawData.length; ++i) {\n\t\t\t\toutputArray[i] = rawData.charCodeAt(i);\n\t\t\t}\n\t\t\treturn outputArray;\n\t\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

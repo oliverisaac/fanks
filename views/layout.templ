@@ -38,7 +38,7 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 	<link rel="apple-touch-icon" href="/static/icon-512.png" />
 </head>
 
-<body id="body" class="bg-neutral-900 text-neutral-100">
+<body id="body" class="bg-neutral-900 text-neutral-100 flex flex-col min-h-screen">
 	<header class="bg-neutral-800">
 		<nav class="container flex items-center justify-between p-4 mx-auto">
 			<a href="/" title="Napp Home" class="flex items-center space-x-2">
@@ -60,28 +60,32 @@ templ Layout(cfg types.Config, user *types.User, title string) {
 			</ul>
 		</nav>
 	</header>
-	<main class="container p-4 mx-auto">
+	<main class="container p-4 mx-auto flex-grow">
 		{ children... }
 	</main>
-	<footer>
-		if user != nil {
-		<button id="push-subscribe-button" class="px-4 py-2 text-white rounded-md bg-blue-600 hover:bg-blue-700">
-			@notificationBellSVG("h-3 w-3") Notify Me
-		</button>
-		if len(user.PushSubscriptions) > 0 {
-		<button hx-confirm="Unsubscribe all devices from push notifications?" hx-post="/push/unsubscribe"
-			hx-swap="delete" id="push-unsubscribe-button"
-			class="px-4 py-2 text-white rounded-md bg-red-800 hover:bg-red-800">
-			Do Not Notify Me
-		</button>
-		}
-		if user.Role == "admin" {
-		<button hx-post="/push/trigger" id="push-trigger-button"
-			class="px-4 py-2 text-white rounded-md bg-yellow-600 hover:bg-yellow-800">
-			Trigger Notification
-		</button>
-		}
-		}
+	<footer class="p-4">
+		<div class="flex justify-center items-center space-x-2">
+			if user != nil {
+			<button id="push-subscribe-button"
+				class="flex items-center px-4 py-2 text-white rounded-md bg-blue-600 hover:bg-blue-700">
+				@notificationBellSVG("h-3 w-3") <span class="ml-2">Notify Me</span>
+			</button>
+			if len(user.PushSubscriptions) > 0 {
+			<button hx-confirm="Unsubscribe all devices from push notifications?" hx-post="/push/unsubscribe"
+				hx-swap="delete" id="push-unsubscribe-button"
+				class="px-4 py-2 text-white rounded-md bg-red-800 hover:bg-red-800">
+				Do Not Notify Me
+			</button>
+			}
+			if user.Role == "admin" {
+			<button hx-post="/push/trigger" id="push-trigger-button"
+				class="px-4 py-2 text-white rounded-md bg-yellow-600 hover:bg-yellow-800">
+				Trigger Notification
+			</button>
+			}
+			}
+		</div>
+		<p class="text-center text-neutral-500 text-xs mt-2">Version: {version.Tag}</p>
 	</footer>
 	<script type="text/javascript">
 		document.addEventListener("DOMContentLoaded", (event) => {

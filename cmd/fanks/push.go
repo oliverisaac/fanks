@@ -91,12 +91,14 @@ func sendPushNotificationToUser(cfg types.Config, db *gorm.DB, user types.User) 
 		}
 
 		prompt := randomPrompt()
-		pushPayload, err := json.Marshal(map[string]string{
+		pushPayload, err := json.Marshal(map[string]interface{}{
 			"title": "Fanks",
 			"body":  prompt,
 			"icon":  fmt.Sprintf("https://%s/static/icon-192.png", cfg.Hostname),
 			"badge": fmt.Sprintf("https://%s/static/badge-128.png", cfg.Hostname),
-			"url":   fmt.Sprintf("/?prompt=%s", url.QueryEscape(prompt)),
+			"data": map[string]string{
+				"url": fmt.Sprintf("/?prompt=%s", url.QueryEscape(prompt)),
+			},
 		})
 		if err != nil {
 			return errors.Wrap(err, "marshalling push payload")
@@ -106,7 +108,7 @@ func sendPushNotificationToUser(cfg types.Config, db *gorm.DB, user types.User) 
 		resp, err := webpush.SendNotification(pushPayload, sub, &webpush.Options{
 			VAPIDPublicKey:  cfg.VapidPublicKey,
 			VAPIDPrivateKey: cfg.VapidPrivateKey,
-			TTL:             300,
+			TTL:             3600,
 			Urgency:         webpush.UrgencyNormal,
 		})
 		if err != nil {
