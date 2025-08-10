@@ -3,7 +3,9 @@ self.addEventListener('push', function(event) {
     event.waitUntil(
         self.registration.showNotification(data.title, {
             body: data.body,
-            data: { url: data.url }
+            icon: data.icon,
+            badge: data.badge,
+            data: data.data
         })
     );
 });
