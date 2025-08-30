@@ -36,3 +36,4 @@ The application will be available at `http://localhost:8080`.
 ## License
 
 This project is licensed under the AGPLv3 License - see the [LICENSE](LICENSE) file for details.
+
