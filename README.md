@@ -2,6 +2,8 @@
 
 Fanks is a self-hosted application that provides a space for you to write down what you are thankful for each day. It's a simple, private, and personal journal for gratitude.
 
+![Screenshot of the fanks app](./screenshot.png)
+
 ## Getting Started
 
 ### Prerequisites
