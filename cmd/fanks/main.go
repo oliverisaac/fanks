@@ -171,6 +171,19 @@ func UserMiddleware(db *gorm.DB) echo.MiddlewareFunc {
 					return errors.Wrap(err, "getting user by id")
 				}
 				c.Set(UserKey, user)
+
+				sess.Options = &sessions.Options{
+					Path:     "/",
+					MaxAge:   3600 * 24 * 365,
+					HttpOnly: true,
+				}
+
+				sess.Values[SessionUserIDKey] = user.ID
+
+				err = sess.Save(c.Request(), c.Response())
+				if err != nil {
+					return errors.Wrap(err, "saving session")
+				}
 			}
 			return next(c)
 		}
