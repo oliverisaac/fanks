@@ -11,7 +11,7 @@ COPY ./tailwind.config.js /workdir/.
 RUN [ "/tailwindcss", "-i", "./static/css/input.css", "-o", "./static/css/style.min.css", "--minify"]
 
 # ---------- Stage 1: Build ----------
-FROM golang:1.24-alpine AS builder
+FROM golang:alpine AS builder
 
 ENV GOCACHE=/go-build-cache
 ENV GOMODCACHE=/go-mod-cache
