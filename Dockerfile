@@ -20,8 +20,11 @@ ENV CGO_ENABLED=0
 # Install CA certs for later copying
 RUN apk add --no-cache git ca-certificates
 
+# Keep this pinned to the templ runtime version in go.mod. With @latest the
+# generated code can call runtime symbols the pinned go.mod version lacks
+# (v0.3.1070 emits templ.ResolveAttributeValue, v0.3.924 has no such func).
 RUN --mount=type=cache,target=/go-build-cache --mount=type=cache,target=/go-mod-cache \
-   go install github.com/a-h/templ/cmd/templ@latest
+   go install github.com/a-h/templ/cmd/templ@v0.3.1070
 
 WORKDIR /app
 
